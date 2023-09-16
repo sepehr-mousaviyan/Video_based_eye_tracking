@@ -1,0 +1,186 @@
+2023-09-15 20:04:18,721 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-09-15 20:04:18,722 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-09-15 20:04:21,409 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:04:21] "GET / HTTP/1.1" 200 -
+2023-09-15 20:04:21,473 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:04:21] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2023-09-15 20:04:21,473 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:04:21] "GET /static/css/styles.css HTTP/1.1" 200 -
+2023-09-15 20:04:24,884 - landmark_extraction.LandmarkFinder - INFO - here
+2023-09-15 20:04:24,885 - landmark_extraction.LandmarkFinder - INFO - there
+2023-09-15 20:04:24,902 - webapp.app - ERROR - Exception on /save_image [POST]
+Traceback (most recent call last):
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/app.py", line 53, in save_image
+    landmarks = LandmarkFinder.extract_landmarks(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 103, in extract_landmarks
+    detection_result = detect(frame)
+                       ^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 90, in detect
+    detector = vision.FaceLandmarker.create_from_options(options)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/face_landmarker.py", line 3104, in create_from_options
+    return cls(
+           ^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/core/base_vision_task_api.py", line 70, in __init__
+    self._runner = _TaskRunner.create(graph_config, packet_callback)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Unable to open file at /Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/face_landmarker_v2_with_blendshapes.task
+2023-09-15 20:04:24,906 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:04:24] "[35m[1mPOST /save_image HTTP/1.1[0m" 500 -
+2023-09-15 20:04:44,062 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-09-15 20:04:44,063 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-09-15 20:04:46,125 - landmark_extraction.LandmarkFinder - INFO - here
+2023-09-15 20:04:46,126 - landmark_extraction.LandmarkFinder - INFO - there
+2023-09-15 20:04:46,128 - webapp.app - ERROR - Exception on /save_image [POST]
+Traceback (most recent call last):
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/app.py", line 53, in save_image
+    landmarks = LandmarkFinder.extract_landmarks(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 103, in extract_landmarks
+    detection_result = detect(frame)
+                       ^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 90, in detect
+    detector = vision.FaceLandmarker.create_from_options(options)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/face_landmarker.py", line 3104, in create_from_options
+    return cls(
+           ^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/core/base_vision_task_api.py", line 70, in __init__
+    self._runner = _TaskRunner.create(graph_config, packet_callback)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Unable to open file at /Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/face_landmarker_v2_with_blendshapes.task
+2023-09-15 20:04:46,133 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:04:46] "[35m[1mPOST /save_image HTTP/1.1[0m" 500 -
+2023-09-15 20:05:06,237 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-09-15 20:05:06,237 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-09-15 20:05:08,516 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:05:08] "GET / HTTP/1.1" 200 -
+2023-09-15 20:05:08,585 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:05:08] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2023-09-15 20:05:08,585 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:05:08] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2023-09-15 20:05:11,747 - landmark_extraction.LandmarkFinder - INFO - here
+2023-09-15 20:05:11,747 - landmark_extraction.LandmarkFinder - INFO - there
+2023-09-15 20:05:11,750 - webapp.app - ERROR - Exception on /save_image [POST]
+Traceback (most recent call last):
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/app.py", line 53, in save_image
+    landmarks = LandmarkFinder.extract_landmarks(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 103, in extract_landmarks
+    detection_result = detect(frame)
+                       ^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 90, in detect
+    detector = vision.FaceLandmarker.create_from_options(options)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/face_landmarker.py", line 3104, in create_from_options
+    return cls(
+           ^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/core/base_vision_task_api.py", line 70, in __init__
+    self._runner = _TaskRunner.create(graph_config, packet_callback)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Unable to get file size, errno=0
+2023-09-15 20:05:11,754 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:05:11] "[35m[1mPOST /save_image HTTP/1.1[0m" 500 -
+2023-09-15 20:05:12,721 - landmark_extraction.LandmarkFinder - INFO - here
+2023-09-15 20:05:12,721 - landmark_extraction.LandmarkFinder - INFO - there
+2023-09-15 20:05:12,723 - webapp.app - ERROR - Exception on /save_image [POST]
+Traceback (most recent call last):
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/app.py", line 53, in save_image
+    landmarks = LandmarkFinder.extract_landmarks(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 103, in extract_landmarks
+    detection_result = detect(frame)
+                       ^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 90, in detect
+    detector = vision.FaceLandmarker.create_from_options(options)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/face_landmarker.py", line 3104, in create_from_options
+    return cls(
+           ^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/core/base_vision_task_api.py", line 70, in __init__
+    self._runner = _TaskRunner.create(graph_config, packet_callback)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Unable to get file size, errno=0
+2023-09-15 20:05:12,724 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:05:12] "[35m[1mPOST /save_image HTTP/1.1[0m" 500 -
+2023-09-15 20:08:57,862 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2023-09-15 20:08:57,862 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2023-09-15 20:09:03,855 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:09:03] "GET / HTTP/1.1" 200 -
+2023-09-15 20:09:03,914 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:09:03] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2023-09-15 20:09:03,915 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:09:03] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2023-09-15 20:09:06,500 - landmark_extraction.LandmarkFinder - INFO - here
+2023-09-15 20:09:06,501 - landmark_extraction.LandmarkFinder - INFO - there
+2023-09-15 20:09:06,503 - webapp.app - ERROR - Exception on /save_image [POST]
+Traceback (most recent call last):
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/webapp/app.py", line 53, in save_image
+    landmarks = LandmarkFinder.extract_landmarks(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 104, in extract_landmarks
+    detection_result = detect(frame)
+                       ^^^^^^^^^^^^^
+  File "/Volumes/work/Deep Learning/EyeTrackingResearch/code/Video_based_eye_tracking/landmark_extraction/LandmarkFinder.py", line 90, in detect
+    detector = vision.FaceLandmarker.create_from_options(options)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/face_landmarker.py", line 3104, in create_from_options
+    return cls(
+           ^^^^
+  File "/Users/sepehrmo/miniconda3/lib/python3.11/site-packages/mediapipe/tasks/python/vision/core/base_vision_task_api.py", line 70, in __init__
+    self._runner = _TaskRunner.create(graph_config, packet_callback)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Unable to get file size, errno=0
+2023-09-15 20:09:06,510 - werkzeug - INFO - 127.0.0.1 - - [15/Sep/2023 20:09:06] "[35m[1mPOST /save_image HTTP/1.1[0m" 500 -

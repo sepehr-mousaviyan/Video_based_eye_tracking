@@ -43,4 +43,6 @@ class VideoProcessor:
         file_path = os.path.join(self.frame_save_path, filename)
         util.save_base64_image(frame_data, file_path)
         self.frame_count = self.frame_count + 1
+        saved_image = cv2.imread(file_path)
+        return saved_image
         
