@@ -1,8 +1,8 @@
 from flask import Flask, render_template, Response, request, jsonify
 import cv2
 from VideoProcessor import VideoProcessor
-
-# from properties.ApplicationProperties import ApplicationProperties
+from landmark_extraction import LandmarkFinder
+from properties.ApplicationProperties import ApplicationProperties
 # from Logging import configure_logging
 import base64
 
@@ -35,7 +35,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_url_path='/static')
-video_stream = cv2.VideoCapture(0)  # Open default camera (index 0)
+app_properties = ApplicationProperties()
+video_stream = cv2.VideoCapture(app_properties.video_source)  # Open default camera (index 0)
 video_processor = VideoProcessor(video_stream)
 
 @app.route('/')
@@ -54,6 +55,8 @@ def save_image():
     landmarks, output_frame = video_processor.process_frame(frame)
     
     _, jpeg_image = cv2.imencode('.jpg', output_frame)
+    # change the format    
+    _, jpeg_image = cv2.imencode('.jpg', frame)
     jpeg_image_data = jpeg_image.tobytes()
 
     # Encode the JPEG image data as base64

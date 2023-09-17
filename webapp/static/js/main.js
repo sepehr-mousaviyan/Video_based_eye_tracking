@@ -69,22 +69,6 @@ function sendImageData(imageData) {
         });
 }
 
-// function sendImageData(imageData) {
-//     fetch('/save_image', {
-//         method: 'POST',
-//         body: JSON.stringify({ image_data: imageData }),
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     })
-//         .then(function(response) {
-//             console.log('Image data sent successfully');
-//         })
-//         .catch(function(error) {
-//             console.error('Error sending image data:', error);
-//         });
-// }
-
 function stopRecording() {
     clearInterval(frameInterval);
     videoStream.getVideoTracks()[0].stop();
