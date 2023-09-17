@@ -1,6 +1,7 @@
 import cv2
 import os
 import Util as util
+from landmark_extraction import LandmarkFinder
 
 class VideoProcessor:
     def __init__(self, video_stream):
@@ -8,12 +9,16 @@ class VideoProcessor:
         # Folder path to save the frames
         self.frame_save_path = './frames/'
         self.frame_count = 0
-
+        
+    def circle_image(self, frame, landmarks):
+        output_frame = LandmarkFinder.circle_specific_landmarks(frame, landmarks)
+        return output_frame
+    
     def process_frame(self, frame):
-        # Process the frame here
-        # ...
-
-        return frame
+        landmarks = LandmarkFinder.extract_landmarks(frame)
+        return self.circle_image(frame, landmarks)
+        
+    
     
     def generate_frames(self):
         frame_count = 0

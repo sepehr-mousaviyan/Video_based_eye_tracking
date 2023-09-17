@@ -31,18 +31,66 @@ landmarks_number = {
 def get_specific_landmarks(rgb_image, detection_result, selected_indexes):
   face_landmarks_list = detection_result.face_landmarks
   annotated_image = np.copy(rgb_image)
-  print(annotated_image.shape)
-
+  x, y = rgb_image.shape[0], rgb_image.shape[1]
   # Loop through the detected faces to visualize.
   for idx in range(len(face_landmarks_list)):
     face_landmarks = face_landmarks_list[idx]
     selected_face_landmarks = []
     for i in selected_indexes:
-      selected_face_landmarks.append(face_landmarks[i])
+      list = face_landmarks[i]
+      # print(type(list))
+      # print('ssssssssssssssss')
+      # print(type(list.x))
+      X = int(np.ceil(y*(list.x)))
+      Y = int(np.ceil(x*(list.y)))
+      pair = (X, Y)
+      selected_face_landmarks.append(pair)
     return selected_face_landmarks
 
+def circle_specific_landmarks(img, landmarks, left_eye_border = True, right_eye_border = True, face_grid = True, right_pupil = True, left_pupil = True):
+  target_categories = []
+  if (left_eye_border):
+    target_categories.append('left_eye_border')
+  if (left_eye_border):
+    target_categories.append('right_eye_border')
+  if (left_eye_border):
+    target_categories.append('face_grid')
+  if (left_eye_border):
+    target_categories.append('right_pupil')
+  if (left_eye_border):
+    target_categories.append('left_pupil')
+    
+    
+  print(landmarks)
+  
+  for mark in landmarks:
+    if mark['name'] in target_categories:
+      landmark_points = mark['landmarks']
+      for pair in landmark_points:
+        print(pair[0])
+        print(pair[1])
+        img = cv2.circle(img, (pair[0], pair[1]), radius=0, color=(0, 0, 255), thickness=2)
+      # # Iterate through pairs of landmarks within this 'name'
+      # for i in range(len(landmark_points) - 1):
+      #     for j in range(i + 1, len(landmark_points)):
+      #         landmark1 = landmark_points[i]
+      #         landmark2 = landmark_points[j]
+            
+      #       # Print or process the pair of landmarks as needed
+      #       print(f"Name: {name}, Landmark Pair: {landmark1}, {landmark2}")
+  
+  # for category_data in landmarks:
+  #   str = category_data['name']
+  #   if str in target_categories:
+  #     # Found the target category
+  #     for landmark_data in category_data.landmarks:
+  #        x , y = landmark_data
+  #        print(x)
+  #       img = cv2.circle(img, (landmark_data['x'], landmark_data['y']), radius=0, color=(0, 0, 255), thickness=20)
 
-def circle_specific_landmarks(rgb_image, detection_result, selected_indexes, img):
+  return img
+
+def circle_specific_landmarks_by_index(rgb_image, detection_result, selected_indexes, img):
   selected_face_landmarks = get_specific_landmarks(rgb_image, detection_result, selected_indexes)
   x, y = rgb_image.shape[0], rgb_image.shape[1]
   print(x,y)
@@ -81,7 +129,7 @@ def plot_face_blendshapes_bar_graph(face_blendshapes):
   plt.tight_layout()
   plt.show()
   
-def detect(frame):
+def detection(raw_frame):
   base_options = python.BaseOptions(model_asset_path='face_landmarker_v2_with_blendshapes.task')
   options = vision.FaceLandmarkerOptions(base_options=base_options,
                                         output_face_blendshapes=True,
@@ -90,9 +138,27 @@ def detect(frame):
   detector = vision.FaceLandmarker.create_from_options(options)
 
   # frame = mp.Image.create_from_file(frame_path)
-  print(type(frame))
-  detection_result = detector.detect(frame)
+  logger.info('first of detect')
+  print(type(raw_frame))
+  # image = Image.fromarray(raw_frame)
+  # print(type(image))
+  logger.info('before frame')
   
+  # raw_frame = raw_frame.astype(np.float32)
+  logger.info('after typoe changing')
+  print(type(raw_frame))
+  # converted_frame = raw_frame.astype(np.float32)  # You may need to adjust the format
+
+# Create an Image object with the appropriate format
+  # image_format = mp.ImageFormat.Format.VEC32F1  # Replace with the correct format
+  frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=raw_frame)
+  
+  # frame = mp.Image(raw_frame)
+  logger.info('end of detect')
+  print(type(frame))
+  
+  detection_result = detector.detect(frame)
+  logger.info('end of detect')
   return detection_result
 def extract_landmarks(frame):
   logger.info('here')
@@ -101,24 +167,25 @@ def extract_landmarks(frame):
   # cv2.waitKey(0)
   # cv2.destroyAllWindows()
   logger.info('there')
-  detection_result = detect(frame)
+  detection_result = detection(frame)
+  logger.info('after detection_result')
   # for diffrent parts:
   landmarks = []
 
   # Get landmarks for left eye border and associate with a name
-  left_eye_border_landmarks = {'name': 'left_eye_border', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number.left_eye_border)}
+  left_eye_border_landmarks = {'name': 'left_eye_border', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['left_eye_border'])}
 
   # Get landmarks for right eye border and associate with a name
-  right_eye_border_landmarks = {'name': 'right_eye_border', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number.right_eye_border)}
+  right_eye_border_landmarks = {'name': 'right_eye_border', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['right_eye_border'])}
 
   # Get landmarks for face grid and associate with a name
-  face_grid_landmarks = {'name': 'face_grid', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number.face_grid)}
+  face_grid_landmarks = {'name': 'face_grid', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['face_grid'])}
 
   # Get landmarks for right pupil and associate with a name
-  right_pupil_landmarks = {'name': 'right_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number.right_pupil_border)}
+  right_pupil_landmarks = {'name': 'right_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['right_pupil'])}
 
   # Get landmarks for left pupil and associate with a name
-  left_pupil_landmarks = {'name': 'left_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number.left_pupil_border)}
+  left_pupil_landmarks = {'name': 'left_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['left_pupil'])}
 
   # Append the dictionaries to the 'landmarks' list
   landmarks.extend([left_eye_border_landmarks, right_eye_border_landmarks, face_grid_landmarks, right_pupil_landmarks, left_pupil_landmarks])

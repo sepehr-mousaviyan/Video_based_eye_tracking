@@ -1,26 +1,26 @@
 from flask import Flask, render_template, Response, request, jsonify
 import cv2
 from VideoProcessor import VideoProcessor
-from landmark_extraction import LandmarkFinder
+
 # from properties.ApplicationProperties import ApplicationProperties
 # from Logging import configure_logging
 import base64
 
 
-import subprocess
-# Define the wget command as a list of arguments
-wget_command = [
-    'wget',
-    '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
-    'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
-]
+# import subprocess
+# # Define the wget command as a list of arguments
+# wget_command = [
+#     'wget',
+#     '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
+#     'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
+# ]
 
-# Execute the wget command
-try:
-    subprocess.run(wget_command, check=True)
-    print("Download completed successfully.")
-except subprocess.CalledProcessError as e:
-    print(f"Download failed with error: {e}")
+# # Execute the wget command
+# try:
+#     subprocess.run(wget_command, check=True)
+#     print("Download completed successfully.")
+# except subprocess.CalledProcessError as e:
+#     print(f"Download failed with error: {e}")
     
 import logging
 # Configure the logging system
@@ -53,9 +53,12 @@ def save_image():
     # processed_frame = video_processor.process_frame(frame)
     
     # Process the captured image data here
-    # change the format
+    output_frame = video_processor.process_frame(frame)
     
-    _, jpeg_image = cv2.imencode('.jpg', frame)
+    # output_frame = frame
+    
+    # change the format
+    _, jpeg_image = cv2.imencode('.jpg', output_frame)
     jpeg_image_data = jpeg_image.tobytes()
 
     # Encode the JPEG image data as base64
