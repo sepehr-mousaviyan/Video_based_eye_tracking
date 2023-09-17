@@ -50,8 +50,8 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
-    
-    output_frame = video_processor.process_frame(frame)
+    # video_processor.frame_count
+    landmarks, output_frame = video_processor.process_frame(frame)
     
     _, jpeg_image = cv2.imencode('.jpg', output_frame)
     jpeg_image_data = jpeg_image.tobytes()
