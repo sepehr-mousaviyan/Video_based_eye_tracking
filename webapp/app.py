@@ -7,20 +7,20 @@ from properties.ApplicationProperties import ApplicationProperties
 import base64
 
 
-# import subprocess
-# # Define the wget command as a list of arguments
-# wget_command = [
-#     'wget',
-#     '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
-#     'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
-# ]
+import subprocess
+# Define the wget command as a list of arguments
+wget_command = [
+    'wget',
+    '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
+    'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
+]
 
-# # Execute the wget command
-# try:
-#     subprocess.run(wget_command, check=True)
-#     print("Download completed successfully.")
-# except subprocess.CalledProcessError as e:
-#     print(f"Download failed with error: {e}")
+# Execute the wget command
+try:
+    subprocess.run(wget_command, check=True)
+    print("Download completed successfully.")
+except subprocess.CalledProcessError as e:
+    print(f"Download failed with error: {e}")
     
 import logging
 # Configure the logging system
