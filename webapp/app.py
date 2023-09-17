@@ -50,14 +50,9 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
-    # processed_frame = video_processor.process_frame(frame)
     
-    # Process the captured image data here
     output_frame = video_processor.process_frame(frame)
     
-    # output_frame = frame
-    
-    # change the format
     _, jpeg_image = cv2.imencode('.jpg', output_frame)
     jpeg_image_data = jpeg_image.tobytes()
 
