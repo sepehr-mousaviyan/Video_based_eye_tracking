@@ -39,6 +39,9 @@ function captureFrame() {
     sendImageData(imageData);
 }
 
+
+var framesContainer = document.getElementById('framesContainer');
+
 function sendImageData(imageData) {
     fetch('/save_image', {
         method: 'POST',
@@ -48,12 +51,39 @@ function sendImageData(imageData) {
         }
     })
         .then(function(response) {
-            console.log('Image data sent successfully');
+            return response.json();
+        })
+        .then(function(data) {
+            // Create an image element and set its source to the received image data
+            var frameImage = document.createElement('img');
+            frameImage.src = 'data:image/jpeg;base64,' + data.image_data;
+            frameImage.classList.add('frame');
+
+            // Append the image element to the frames container
+            framesContainer.appendChild(frameImage);
+
+            console.log('Image data received and displayed');
         })
         .catch(function(error) {
-            console.error('Error sending image data:', error);
+            console.error('Error receiving image data:', error);
         });
 }
+
+// function sendImageData(imageData) {
+//     fetch('/save_image', {
+//         method: 'POST',
+//         body: JSON.stringify({ image_data: imageData }),
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     })
+//         .then(function(response) {
+//             console.log('Image data sent successfully');
+//         })
+//         .catch(function(error) {
+//             console.error('Error sending image data:', error);
+//         });
+// }
 
 function stopRecording() {
     clearInterval(frameInterval);

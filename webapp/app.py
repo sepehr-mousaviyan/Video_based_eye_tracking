@@ -1,7 +1,10 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, jsonify
 import cv2
 from VideoProcessor import VideoProcessor
 from landmark_extraction import LandmarkFinder
+# from properties.ApplicationProperties import ApplicationProperties
+# from Logging import configure_logging
+import base64
 
 
 import subprocess
@@ -47,15 +50,26 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
+    # processed_frame = video_processor.process_frame(frame)
     
     # Process the captured image data here
     # change the format
-    landmarks = LandmarkFinder.extract_landmarks(frame)
+    
+    _, jpeg_image = cv2.imencode('.jpg', frame)
+    jpeg_image_data = jpeg_image.tobytes()
+
+    # Encode the JPEG image data as base64
+    base64_image_data = base64.b64encode(jpeg_image_data).decode('utf-8')
+
+    # Create a response with the base64-encoded image data
+    response = jsonify(image_data=base64_image_data)
+
     logger.info("Done.")
 
-    return 'Image data received'
+    return response
 
 if __name__ == '__main__':
+    # configure_logging()  # Call the logging configuration function
     app.run(debug=True)
 
 
