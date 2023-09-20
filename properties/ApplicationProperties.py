@@ -42,3 +42,7 @@ class ApplicationProperties:
     @property
     def log_format(self):
         return self.property_manager.get_value('Logging.LOG_FORMAT')
+
+    @property
+    def active_form_id(self):
+        return self.property_manager.get_value('Form.ACTIVE_FORM_ID')

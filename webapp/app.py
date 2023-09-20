@@ -39,6 +39,31 @@ app_properties = ApplicationProperties()
 video_stream = cv2.VideoCapture(app_properties.video_source)  # Open default camera (index 0)
 video_processor = VideoProcessor(video_stream)
 
+
+
+forms = {
+    'form1': {
+        'type': 'video',
+        'content': 'static/forms/video.mp4',
+        'time_interval': 10  # Time interval in seconds for this form
+    },
+    'form2': {
+        'type': 'slideshow',
+        'content': [
+            'static/forms/image1.jpg',
+            'static/forms/image2.jpg',
+            'static/forms/image3.jpg'
+        ],
+        'time_interval': 5  # Time interval in seconds for this form
+    },
+    'form3': {
+        'type': 'document',
+        'content': 'static/forms/document.pdf',
+        'time_interval': 15  # Time interval in seconds for this form
+    }
+}
+
+
 @app.route('/')
 def camera_permission():
     return render_template('eye_tracker.html')
@@ -51,12 +76,10 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
-    # video_processor.frame_count
-    landmarks, output_frame = video_processor.process_frame(frame)
+    # landmarks, output_frame = video_processor.process_frame(frame)
     
-    _, jpeg_image = cv2.imencode('.jpg', output_frame)
-    # change the format    
     _, jpeg_image = cv2.imencode('.jpg', frame)
+
     jpeg_image_data = jpeg_image.tobytes()
 
     # Encode the JPEG image data as base64
@@ -68,6 +91,13 @@ def save_image():
     logger.info("Done.")
 
     return response
+
+
+@app.route('/get_form')
+def get_form():
+    form_id = app_properties.active_form_id
+    form_data = forms.get(form_id)
+    return jsonify(form_data)
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function

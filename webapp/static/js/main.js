@@ -5,6 +5,8 @@ var context = canvas.getContext('2d');
 var frameCount = 0;
 var videoElement;
 var framesContainer = document.getElementById('framesContainer');
+var stopRecordingButton = document.getElementById('stopRecordingButton');
+var currentForm;
 
 function startRecording() {
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -14,8 +16,16 @@ function startRecording() {
             videoElement.srcObject = stream;
             videoElement.autoplay = true;
             document.getElementById('videoContainer').appendChild(videoElement);
+            currentForm = getForm()
+            
+            showForm(currentForm);
+
+            // Get the current form's time interval
+            var timeInterval = currentForm.time_interval * 1000;  // Convert to milliseconds
 
             frameInterval = setInterval(captureFrame, 1000 / 1);
+            setTimeout(stopRecording, timeInterval);  // Stop recording after the specified time interval
+            console.log('Recording finished')
         })
         .catch(function(error) {
             console.error('Error accessing camera:', error);
@@ -38,9 +48,6 @@ function captureFrame() {
     // Send the captured image data to the server
     sendImageData(imageData);
 }
-
-
-var framesContainer = document.getElementById('framesContainer');
 
 function sendImageData(imageData) {
     fetch('/save_image', {
@@ -75,4 +82,55 @@ function stopRecording() {
     var videoContainer = document.getElementById('videoContainer');
     videoContainer.innerHTML = '';
     frameCount = 0;
+}
+
+function getForm() {
+    return fetch('/get_form')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        return data;
+      })
+      .catch(function(error) {
+        console.error('Error fetching form:', error);
+      });
+  }
+
+// Function to fetch and show the form based on form ID
+function showForm(formData) {
+  framesContainer.innerHTML = ''; // Clear the frames container
+
+  // Check the form type and show the appropriate content
+  if (formData.type === 'video') {
+    var videoElement = document.createElement('video');
+    videoElement.src = formData.content;
+    videoElement.classList.add('form-content', 'fullscreen');
+    framesContainer.appendChild(videoElement);
+  } else if (formData.type === 'slideshow') {
+    var images = formData.content;
+    var totalImages = images.length;
+    var currentIndex = 0;
+
+    function showNextImage() {
+      var imageElement = document.createElement('img');
+      imageElement.src = images[currentIndex];
+      imageElement.classList.add('form-content', 'fullscreen');
+      framesContainer.innerHTML = ''; // Clear previous image
+      framesContainer.appendChild(imageElement);
+      currentIndex++;
+
+      if (currentIndex === totalImages) {
+        clearInterval(slideshowInterval);
+      }
+    }
+
+    showNextImage(); // Show the first image immediately
+    var slideshowInterval = setInterval(showNextImage, 5000);
+  } else if (formData.type === 'document') {
+    var documentIframe = document.createElement('iframe');
+    documentIframe.src = formData.content;
+    documentIframe.classList.add('form-content', 'fullscreen');
+    framesContainer.appendChild(documentIframe);
+  }
 }
