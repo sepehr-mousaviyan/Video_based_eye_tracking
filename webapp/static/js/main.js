@@ -24,7 +24,7 @@ function startRecording() {
             showForm(currentForm);
             // Get the current form's time interval
             var timeInterval = currentForm.time_interval * 10000;
-            frameInterval = setInterval(captureFrame, 1000 / 1);
+            frameInterval = setInterval(captureFrame, 1000 / 0.5);
             setTimeout(stopRecording, timeInterval);
             console.log('Recording finished');
         })
