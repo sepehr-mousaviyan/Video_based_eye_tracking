@@ -16,16 +16,17 @@ function startRecording() {
             videoElement.srcObject = stream;
             videoElement.autoplay = true;
             document.getElementById('videoContainer').appendChild(videoElement);
-            currentForm = getForm()
-            
+            return getForm(); // Return the Promise from getForm()
+        })
+        .then(function(form) {
+            currentForm = form; // Assign the received form to the currentForm variable
+            console.log('Current form:', currentForm);
             showForm(currentForm);
-
             // Get the current form's time interval
-            var timeInterval = currentForm.time_interval * 1000;  // Convert to milliseconds
-
+            var timeInterval = currentForm.time_interval * 1000;
             frameInterval = setInterval(captureFrame, 1000 / 1);
-            setTimeout(stopRecording, timeInterval);  // Stop recording after the specified time interval
-            console.log('Recording finished')
+            // setTimeout(stopRecording, timeInterval);
+            console.log('Recording finished');
         })
         .catch(function(error) {
             console.error('Error accessing camera:', error);
@@ -47,6 +48,11 @@ function captureFrame() {
 
     // Send the captured image data to the server
     sendImageData(imageData);
+
+    // Check if the current form type is 'special' and call showForm
+    if (currentForm && currentForm.type === 'special') {
+        showForm(currentForm);
+    }
 }
 
 function sendImageData(imageData) {
@@ -97,12 +103,44 @@ function getForm() {
       });
   }
 
+function getWindowSize() {
+    var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    return { window_width: windowWidth, window_height: windowHeight };
+}
+
 // Function to fetch and show the form based on form ID
 function showForm(formData) {
   framesContainer.innerHTML = ''; // Clear the frames container
 
   // Check the form type and show the appropriate content
-  if (formData.type === 'video') {
+  if (formData.type == 'special') {
+    fetch('/generate_page', {
+        method: 'POST',
+        body: JSON.stringify(getWindowSize()),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          // Create an image element and set its source to the received image data
+          var frameImage = document.createElement('img');
+          frameImage.src = 'data:image/jpeg;base64,' + data.image_data;
+          frameImage.classList.add('form-content', 'fullscreen');
+  
+          // Clear previous content and append the image element to the frames container
+          framesContainer.innerHTML = '';
+          framesContainer.appendChild(frameImage);
+  
+          console.log('Special form displayed');
+        })
+        .catch(function(error) {
+          console.error('Error displaying special form:', error);
+        });
+  } else if (formData.type === 'video') {
     var videoElement = document.createElement('video');
     videoElement.src = formData.content;
     videoElement.classList.add('form-content', 'fullscreen');

@@ -5,6 +5,8 @@ from landmark_extraction import LandmarkFinder
 from properties.ApplicationProperties import ApplicationProperties
 # from Logging import configure_logging
 import base64
+import random
+import numpy as np
 
 
 import subprocess
@@ -60,7 +62,12 @@ forms = {
         'type': 'document',
         'content': 'static/forms/document.pdf',
         'time_interval': 15  # Time interval in seconds for this form
+    },
+    'form4': {
+        'type': 'special',
+        'time_interval': 20  # Time interval in seconds for this form
     }
+    
 }
 
 
@@ -98,6 +105,31 @@ def get_form():
     form_id = app_properties.active_form_id
     form_data = forms.get(form_id)
     return jsonify(form_data)
+
+
+
+@app.route('/generate_page', methods=['POST'])
+def generate_page():
+    data = request.get_json()
+    window_width = int(data['window_width'])
+    window_height = int(data['window_height'])
+
+    # Generate random coordinates within the window size
+    x = random.randint(0, window_width)
+    y = random.randint(0, window_height)
+
+    # Generate a white page with a red dot at the random coordinates
+    image = np.ones((window_height, window_width, 3), dtype=np.uint8) * 255
+    cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+
+    # Convert the image to JPEG format
+    _, jpeg_image = cv2.imencode('.jpg', image)
+    jpeg_image_data = jpeg_image.tobytes()
+    base64_image_data = base64.b64encode(jpeg_image_data).decode('utf-8')
+
+    response = jsonify(image_data=base64_image_data)
+
+    return response
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function
