@@ -121,7 +121,9 @@ def extract_landmarks(frame):
   face_grid_landmarks = {'name': 'face_grid', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['face_grid'])}
   right_pupil_landmarks = {'name': 'right_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['right_pupil'])}
   left_pupil_landmarks = {'name': 'left_pupil', 'landmarks': get_specific_landmarks(frame, detection_result, landmarks_number['left_pupil'])}
-
+  
+  #TODO get monitor size and add it too landmarks 
+  monitor_size = {}
   landmarks.extend([left_eye_border_landmarks, right_eye_border_landmarks, face_grid_landmarks, right_pupil_landmarks, left_pupil_landmarks])
 
   return landmarks

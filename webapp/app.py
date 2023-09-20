@@ -1,7 +1,9 @@
 from flask import Flask, render_template, Response, request, jsonify
 import cv2
 from VideoProcessor import VideoProcessor
+from DisplayProcessor import DisplayProcessor
 from landmark_extraction import LandmarkFinder
+
 from properties.ApplicationProperties import ApplicationProperties
 # from Logging import configure_logging
 import base64
@@ -40,6 +42,7 @@ app = Flask(__name__, static_url_path='/static')
 app_properties = ApplicationProperties()
 video_stream = cv2.VideoCapture(app_properties.video_source)  # Open default camera (index 0)
 video_processor = VideoProcessor(video_stream)
+display_processor = DisplayProcessor()
 
 
 
@@ -110,14 +113,22 @@ def get_form():
 
 @app.route('/generate_page', methods=['POST'])
 def generate_page():
+    
     data = request.get_json()
+    
     window_width = int(data['window_width'])
+    display_processor.set_window_width(window_width)
     window_height = int(data['window_height'])
+    display_processor.set_window_height(window_height)
+    
+    display_processor.make_circle_points( n = 10 ,m = 20)
+    x , y = display_processor.get_possition()
+    
 
     # Generate random coordinates within the window size
-    x = random.randint(0, window_width)
-    y = random.randint(0, window_height)
-
+    # x = random.randint(0, window_width)
+    # y = random.randint(0, window_height)
+    
     # Generate a white page with a red dot at the random coordinates
     image = np.ones((window_height, window_width, 3), dtype=np.uint8) * 255
     cv2.circle(image, (x, y), 5, (0, 0, 255), -1)

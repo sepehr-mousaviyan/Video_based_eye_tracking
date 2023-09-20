@@ -1,7 +1,7 @@
 import csv
 import os
 import pandas as pd
-
+#TODO add monitor size data
 class RWCSV:
     def __init__(self, csv_file_path, landmarks_file_name='custom_landmarks_data.csv', gaze_file_name='index_gaze_data.csv'):
         self.csv_file_path = csv_file_path
