@@ -18,7 +18,9 @@ class VideoProcessor:
         return output_frame
     
     def process_frame(self, frame):
+        # print('here')
         landmarks = LandmarkFinder.extract_landmarks(frame)
+        # print(landmarks)
         return landmarks, self.circle_image(frame, landmarks)
         
     

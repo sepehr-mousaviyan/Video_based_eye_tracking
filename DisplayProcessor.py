@@ -7,6 +7,7 @@ class DisplayProcessor:
         self.window_height = 0
         self.count = 0
         self.points = []
+        self.gaze = [0, 0]
         
     def set_window_width(self, window_width):
         self.window_width = window_width
@@ -29,6 +30,15 @@ class DisplayProcessor:
               
     def get_possition(self):
         point = self.points[self.count]
-        self.count = self.count + 1
         return point[0], point[1]
+    
+    def update_counter(self):
+        self.count = self.count + 1
+    
+    def get_gaze(self):
+        return self.gaze
+    
+    def set_gaze(self, x, y):
+        self.gaze[0] = x
+        self.gaze[1] = y
 

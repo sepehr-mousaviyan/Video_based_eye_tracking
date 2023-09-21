@@ -106,9 +106,10 @@ def detection(raw_frame):
                                         output_face_blendshapes=True,
                                         output_facial_transformation_matrixes=True,
                                         num_faces=1)
-  detector = vision.FaceLandmarker.create_from_options(options)
-
+  detector = vision.FaceLandmarker.create_from_options(options) 
+  # print('there')
   frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=raw_frame)
+  # print(frame)
   detection_result = detector.detect(frame)
   return detection_result
 

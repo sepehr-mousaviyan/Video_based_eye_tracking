@@ -86,9 +86,9 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
-    # landmarks, output_frame = video_processor.process_frame(frame)
-    
-    _, jpeg_image = cv2.imencode('.jpg', frame)
+    landmarks, output_frame = video_processor.process_frame(frame)
+    print(landmarks)
+    _, jpeg_image = cv2.imencode('.jpg', output_frame)
 
     jpeg_image_data = jpeg_image.tobytes()
 
@@ -123,7 +123,9 @@ def generate_page():
     
     display_processor.make_circle_points( n = 10 ,m = 20)
     x , y = display_processor.get_possition()
-    
+    print(x ,y)
+    display_processor.set_gaze(x , y)
+    display_processor.update_counter()
 
     # Generate random coordinates within the window size
     # x = random.randint(0, window_width)
