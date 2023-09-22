@@ -68,7 +68,7 @@ forms = {
     },
     'form4': {
         'type': 'special',
-        'time_interval': 20  # Time interval in seconds for this form
+        'time_interval': 5  # Time interval in seconds for this form
     }
     
 }
@@ -87,6 +87,7 @@ def save_image():
     frame_data = request.json['image_data']
     frame = video_processor.save_frame(frame_data)
     landmarks, output_frame = video_processor.process_frame(frame)
+    x, y= display_processor.get_gaze()
     print(landmarks)
     _, jpeg_image = cv2.imencode('.jpg', output_frame)
 
