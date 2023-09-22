@@ -3,21 +3,21 @@ import os
 import pandas as pd
 #TODO add monitor size data if needed
 class DataSet:
-    def __init__(self, csv_file_path, frames_file_name='images_data.csv', landmarks_file_name='landmarks_data.csv', gazes_file_name='gaze_data.csv'):
+    def __init__(self, csv_file_path , frames_file_name='images_data.csv', landmarks_file_name='landmarks_data.csv', gazes_file_name='gaze_data.csv'):
         self.csv_file_path = csv_file_path
-        self.faces_file_name = faces_file_name
+        self.frames_file_name = frames_file_name
         self.landmarks_file_name = landmarks_file_name
-        self.gaze_file_name = gaze_file_name
+        self.gazes_file_name = gazes_file_name
         
     def write_frameData_to_csv(self, index, frame_path, landmarks, gaze):
         #consider that frame_path is the path of the image files!
-        self.write_frame_path_to_csv(self, index, frame_path)
-        self.write_landmarks_to_csv(self, index, landmarks)
-        self.write_gaze_to_csv(self, index, gaze_x, gaze_y)
+        self.write_framePath_to_csv(index, frame_path)
+        self.write_landmarks_to_csv(index, landmarks)
+        self.write_gaze_to_csv(index, gaze[0], gaze[1])
         #TODO add log in here
 
             
-    def write_frame_path_to_csv(self, index, frame_path):
+    def write_framePath_to_csv(self, index, framePath):
         full_file_path = os.path.join(self.csv_file_path, self.frames_file_name)
 
         if not os.path.exists(full_file_path):
@@ -29,7 +29,7 @@ class DataSet:
         with open(full_file_path, mode='a', newline='') as csv_file:
             fieldnames = ['Index', 'Frame_path']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writerow({'Index': index, 'Frame_path': frame_path})
+            writer.writerow({'Index': index, 'Frame_path': framePath})
             
     def write_landmarks_to_csv(self, index, landmarks):
         full_file_path = os.path.join(self.csv_file_path, self.landmarks_file_name)
@@ -42,7 +42,7 @@ class DataSet:
 
         with open(full_file_path, mode='a', newline='') as csv_file:
             fieldnames = ['Index', 'Category', 'X', 'Y']
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)x
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
             for category_data in landmarks:
                 category_name = category_data['name']
@@ -50,7 +50,7 @@ class DataSet:
                     writer.writerow({'Index': index, 'Category': category_name, 'X': x, 'Y': y})
                     
     def write_gaze_to_csv(self, index, gaze_x, gaze_y):
-        full_file_path = os.path.join(self.csv_file_path, self.gaze_file_name)
+        full_file_path = os.path.join(self.csv_file_path, self.gazes_file_name)
 
         if not os.path.exists(full_file_path):
             with open(full_file_path, mode='w', newline='') as csv_file:
@@ -62,9 +62,21 @@ class DataSet:
             fieldnames = ['Index', 'Gaze_X', 'Gaze_Y']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             writer.writerow({'Index': index, 'Gaze_X': gaze_x, 'Gaze_Y': gaze_y})
-
+            
     def load_by_index(self, index):
-        
+        landmarks = []
+        with open(os.path.join(self.csv_file_path, self.landmarks_file_name), mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            for row in csv_reader:
+                if int(row['Index']) == index:
+                    category = row['Category']
+                    x = int(row['X'])
+                    y = int(row['Y'])
+
+                    landmarks.append({'category': category, 'x': x, 'y': y})
+                    
+        return landmarks
+    
     def load_landmarks_from_csv(self):
         landmarks_data = {}
         with open(os.path.join(self.csv_file_path, self.landmarks_file_name), mode='r') as csv_file:
@@ -85,7 +97,7 @@ class DataSet:
     
     def load_gaze_from_csv(self):
         gaze_data = {}
-        with open(os.path.join(self.csv_file_path, self.gaze_file_name), mode='r') as csv_file:
+        with open(os.path.join(self.csv_file_path, self.gazes_file_name), mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
                 index = int(row['Index'])
@@ -100,7 +112,7 @@ class DataSet:
 
     def combine_csv_files(self, output_file_name='combined_data.csv'):
         landmarks_df = pd.read_csv(os.path.join(self.csv_file_path, self.landmarks_file_name))
-        gaze_df = pd.read_csv(os.path.join(self.csv_file_path, self.gaze_file_name))
+        gaze_df = pd.read_csv(os.path.join(self.csv_file_path, self.gazes_file_name))
 
         # Merge the dataframes based on 'Index'
         combined_df = pd.merge(landmarks_df, gaze_df, on='Index')

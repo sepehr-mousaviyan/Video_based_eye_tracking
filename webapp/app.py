@@ -3,6 +3,7 @@ import cv2
 from VideoProcessor import VideoProcessor
 from DisplayProcessor import DisplayProcessor
 from landmark_extraction import LandmarkFinder
+from data import DataSet
 
 from properties.ApplicationProperties import ApplicationProperties
 # from Logging import configure_logging
@@ -13,18 +14,18 @@ import numpy as np
 
 import subprocess
 # Define the wget command as a list of arguments
-wget_command = [
-    'wget',
-    '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
-    'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
-]
+# wget_command = [
+#     'wget',
+#     '-O', 'face_landmarker_v2_with_blendshapes.task',  # Output filename
+#     'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
+# ]
 
-# Execute the wget command
-try:
-    subprocess.run(wget_command, check=True)
-    print("Download completed successfully.")
-except subprocess.CalledProcessError as e:
-    print(f"Download failed with error: {e}")
+# # Execute the wget command
+# try:
+#     subprocess.run(wget_command, check=True)
+#     print("Download completed successfully.")
+# except subprocess.CalledProcessError as e:
+#     print(f"Download failed with error: {e}")
     
 import logging
 # Configure the logging system
@@ -43,6 +44,7 @@ app_properties = ApplicationProperties()
 video_stream = cv2.VideoCapture(app_properties.video_source)  # Open default camera (index 0)
 video_processor = VideoProcessor(video_stream)
 display_processor = DisplayProcessor()
+data_set = DataSet.DataSet('./')
 
 
 
@@ -85,10 +87,12 @@ def video_feed():
 @app.route('/save_image', methods=['POST'])
 def save_image():
     frame_data = request.json['image_data']
-    frame = video_processor.save_frame(frame_data)
+    frame, raw = video_processor.save_frame(frame_data)
     landmarks, output_frame = video_processor.process_frame(frame)
-    x, y= display_processor.get_gaze()
-    print(landmarks)
+    gaze = display_processor.get_point()
+    print(gaze)
+    index = video_processor.get_frame_count()
+    data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
     _, jpeg_image = cv2.imencode('.jpg', output_frame)
 
     jpeg_image_data = jpeg_image.tobytes()
@@ -123,9 +127,9 @@ def generate_page():
     display_processor.set_window_height(window_height)
     
     display_processor.make_circle_points( n = 10 ,m = 20)
-    x , y = display_processor.get_possition()
-    print(x ,y)
-    display_processor.set_gaze(x , y)
+    
+    gaze = display_processor.get_point()
+    
     display_processor.update_counter()
 
     # Generate random coordinates within the window size
@@ -134,7 +138,7 @@ def generate_page():
     
     # Generate a white page with a red dot at the random coordinates
     image = np.ones((window_height, window_width, 3), dtype=np.uint8) * 255
-    cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+    cv2.circle(image, (gaze[0], gaze[1]), 5, (0, 0, 255), -1)
 
     # Convert the image to JPEG format
     _, jpeg_image = cv2.imencode('.jpg', image)

@@ -12,6 +12,9 @@ class VideoProcessor:
         # Folder path to save the frames
         self.frame_save_path = self.app_properties.frame_save_path
         self.frame_count = 0
+    
+    def get_frame_count(self):
+        return self.frame_count
         
     def circle_image(self, frame, landmarks):
         output_frame = LandmarkFinder.circle_specific_landmarks(frame, landmarks)
@@ -54,5 +57,5 @@ class VideoProcessor:
         util.save_base64_image(frame_data, file_path)
         self.frame_count = self.frame_count + 1
         saved_image = cv2.imread(file_path)
-        return saved_image
+        return saved_image, frame_data
         
