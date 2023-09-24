@@ -21,6 +21,7 @@ function startRecording() {
         .then(function(form) {
             currentForm = form; // Assign the received form to the currentForm variable
             console.log('Current form:', currentForm);
+            framesContainer.innerHTML = ''; // Clear the frames container
             showForm(currentForm);
             // Get the current form's time interval
             var timeInterval = currentForm.time_interval * 10000;
@@ -111,7 +112,6 @@ function getWindowSize() {
 
 // Function to fetch and show the form based on form ID
 function showForm(formData) {
-  framesContainer.innerHTML = ''; // Clear the frames container
 
   // Check the form type and show the appropriate content
   if (formData.type == 'special') {
