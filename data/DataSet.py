@@ -9,6 +9,31 @@ class DataSet:
         self.landmarks_file_name = landmarks_file_name
         self.gazes_file_name = gazes_file_name
         
+        self.landmarks_list = []
+        self.frame_list = []
+        self.gaze_list = []
+    
+    def write_to_csv(self, frame_index, frame_path, landmarks, gaze):
+        data_list = []
+
+        for frame_index, frame_path in enumerate(photo_dataset):
+            landmarks = landmark_dataset[frame_index]  # Assuming landmarks for the same frame are at the same index
+            gaze_coordinates = (x, y)  # Replace with the actual gaze coordinates for this frame
+
+            # Create a dictionary for this frame
+            frame_data = {
+                'frame_index': frame_index,
+                'frame_path': frame_path,
+                'landmarks': landmarks,
+                'gaze': gaze
+            }
+
+            # Add the frame data to the list
+            data_list.append(frame_data)
+
+        # Now 'data_list' contains a list of dictionaries, each representing a frame with its associated data.
+
+            
     def write_frameData_to_csv(self, index, frame_path, landmarks, gaze):
         #consider that frame_path is the path of the image files!
         self.write_framePath_to_csv(index, frame_path)
@@ -33,7 +58,6 @@ class DataSet:
             
     def write_landmarks_to_csv(self, index, landmarks):
         full_file_path = os.path.join(self.csv_file_path, self.landmarks_file_name)
-
         if not os.path.exists(full_file_path):
             with open(full_file_path, mode='w', newline='') as csv_file:
                 fieldnames = ['Index', 'Category', 'X', 'Y']
@@ -78,25 +102,27 @@ class DataSet:
         return landmarks
     
     def load_landmarks_from_csv(self):
-        landmarks_data = {}
+        
+        landmarks = []
         with open(os.path.join(self.csv_file_path, self.landmarks_file_name), mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
+            
+            index_base = 0
             for row in csv_reader:
                 index = int(row['Index'])
                 category = row['Category']
                 x = int(row['X'])
                 y = int(row['Y'])
-
-                if index not in landmarks_data:
-                    landmarks_data[index] = {'index': index, 'landmarks': []}
-
-                landmarks_data[index]['landmarks'].append({'category': category, 'x': x, 'y': y})
-
-        index_landmarks_pairs = list(landmarks_data.values())
-        return index_landmarks_pairs
+                
+                landmarks.append({'index': index, 'category': category, 'x': x, 'y': y})
+                
+                
+        self.landmarks_list = landmarks
+        
+        return self.landmarks_list
     
     def load_gaze_from_csv(self):
-        gaze_data = {}
+        gaze_data = []
         with open(os.path.join(self.csv_file_path, self.gazes_file_name), mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
@@ -104,10 +130,11 @@ class DataSet:
                 gaze_x = int(row['Gaze_X'])
                 gaze_y = int(row['Gaze_Y'])
 
-                gaze_data[index] = {'index': index, 'gaze_x': gaze_x, 'gaze_y': gaze_y}
+                gaze_data.append({'index': index, 'gaze_x': gaze_x, 'gaze_y': gaze_y})
 
-        gaze_pairs = list(gaze_data.values())
-        return gaze_pairs
+        self.gaze_list = gaze_data
+        
+        return self.gaze_list
 
 
     def combine_csv_files(self, output_file_name='combined_data.csv'):

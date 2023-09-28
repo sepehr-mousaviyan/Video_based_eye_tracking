@@ -34,9 +34,9 @@ class VideoProcessor:
             success, frame = self.video_stream.read()
             if not success:
                 break
-
+            print('shimbalaloot')
             processed_frame = self.process_frame(frame)
-
+            
             # Convert the frame to JPEG format
             ret, buffer = cv2.imencode('.jpg', processed_frame)
             frame = buffer.tobytes()
