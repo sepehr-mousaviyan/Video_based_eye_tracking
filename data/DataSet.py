@@ -30,6 +30,7 @@ class DataSet:
 
             # Add the frame data to the list
             data_list.append(frame_data)
+            # print(self.landmarks_list)
 
         # Now 'data_list' contains a list of dictionaries, each representing a frame with its associated data.
 
@@ -100,6 +101,20 @@ class DataSet:
                     landmarks.append({'category': category, 'x': x, 'y': y})
                     
         return landmarks
+    
+    def load_frame_from_csv(self):
+        frame_data = []
+        with open(os.path.join(self.csv_file_path, self.frames_file_name), mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            for row in csv_reader:
+                index = int(row['Index'])
+                frame_path = row['Frame_path']
+
+                gaze_data.append({'index': index, 'path': frame_path})
+
+        self.frame_list = frame_list
+        
+        return self.frame_list
     
     def load_landmarks_from_csv(self):
         

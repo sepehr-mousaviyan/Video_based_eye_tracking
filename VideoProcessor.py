@@ -12,6 +12,7 @@ class VideoProcessor:
         # Folder path to save the frames
         self.frame_save_path = self.app_properties.frame_save_path
         self.frame_count = 0
+        self.subjectID = 0
     
     def get_frame_count(self):
         return self.frame_count
@@ -52,7 +53,7 @@ class VideoProcessor:
     def save_frame(self, frame_data):
         # Create the directory if it doesn't exist
         os.makedirs(self.frame_save_path, exist_ok=True)
-        filename = f'frame_{self.frame_count}.jpg'
+        filename = f'{self.subjectID}_frame_{self.frame_count}.jpg'
         file_path = os.path.join(self.frame_save_path, filename)
         util.save_base64_image(frame_data, file_path)
         self.frame_count = self.frame_count + 1
