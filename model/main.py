@@ -30,3 +30,6 @@ def __getitem__(self, idx):
         image = self.transform(image)
 
     return image, landmarks, gaze_coordinates
+
+def fine_tune_frames(self):
+    train_fine_tune_data.fine_tune_vit_model(image_paths, landmark_data, gaze_coordinates)
