@@ -2,6 +2,7 @@ import cv2
 import os
 import Util as util
 from landmark_extraction import LandmarkFinder
+from gaze_extraction import GazeFinder
 from properties.ApplicationProperties import ApplicationProperties
 
 
@@ -24,8 +25,10 @@ class VideoProcessor:
     def process_frame(self, frame):
         # print('here')
         landmarks = LandmarkFinder.extract_landmarks(frame)
-        # print(landmarks)
-        return landmarks, self.circle_image(frame, landmarks)
+        gazeDirection_frame = GazeFinder.extract_directon(frame)
+        print('here')
+        
+        return landmarks, self.circle_image(gazeDirection_frame, landmarks)
         
     
     
@@ -59,4 +62,13 @@ class VideoProcessor:
         self.frame_count = self.frame_count + 1
         saved_image = cv2.imread(file_path)
         return saved_image, frame_data
+    
+    def save_frame_processed(self, frame):
+        # Create the directory if it doesn't exist
+        os.makedirs(self.frame_save_path, exist_ok=True)
+        filename = f'{self.subjectID}_1_frame_{self.frame_count}.jpg'
+        file_path = os.path.join(self.frame_save_path, filename)
+        util.save_base64_image_2(frame, file_path)
+        saved_image = cv2.imread(file_path)
+        return saved_image
         

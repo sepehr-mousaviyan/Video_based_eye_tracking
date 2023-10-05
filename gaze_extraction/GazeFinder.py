@@ -6,38 +6,38 @@ from l2cs import Pipeline, render
 import cv2
 import torch
 import numpy as np
-# Get the current working directory
-CWD = os.getcwd()
-model_path = os.path.join(CWD, 'models', 'L2CSNet_gaze360.pkl')
 
+CWD = os.getcwd()
+model_path = os.path.join(CWD, '../gaze_extraction/models', 'L2CSNet_gaze360.pkl')
+print(model_path)
 gaze_pipeline = Pipeline(
     weights=model_path,
     arch='ResNet50',
     device=torch.device('cpu')  # or 'gpu'
 )
- 
-cap = cv2.VideoCapture(0)
-while(True):
-    _, frame = cap.read()    
-    # Process frame and visualize
+
+def extract_directon(frame):
     results = gaze_pipeline.step(frame)
     frame = render(frame, results)
-    cv2.imshow('frame', frame)
-    cv2.waitKey(0)
+    
+    pitch = results.pitch
+    yaw = results.yaw
+    bboxes = results.bboxes
+    landmarks = results.landmarks
+    scores = results.scores
+    return frame
+
+# cap = cv2.VideoCapture(0)
+# while(True):
+#     _, frame = cap.read()    
+#     # Process frame and visualize
+#     results = gaze_pipeline.step(frame)
+#     frame = render(frame, results)
+#     cv2.imshow('frame', frame)
+#     cv2.waitKey(0)
+
 # print(type(frame))
-pitch = results.pitch
 
-# Accessing yaw data
-yaw = results.yaw
-
-# Accessing bboxes data
-bboxes = results.bboxes
-
-# Accessing landmarks data
-landmarks = results.landmarks
-
-# Accessing scores data
-scores = results.scores
 
 # print(yaw,pitch)
 
@@ -82,4 +82,4 @@ scores = results.scores
 #     frame = render(frame, results)
 #     cv2.imshow('frame', frame)
 
-cv2.waitKey()
+# cv2.waitKey()
