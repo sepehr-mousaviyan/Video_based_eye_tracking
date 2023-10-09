@@ -8,10 +8,21 @@ class DataSet:
         self.frames_file_name = frames_file_name
         self.landmarks_file_name = landmarks_file_name
         self.gazes_file_name = gazes_file_name
+        self.combine_csv_files()
+        self.user_id = self.get_last_user_id() + 1  # Get the last user ID and increment by 1
         
         self.landmarks_list = []
         self.frame_list = []
         self.gaze_list = []
+
+    def get_last_user_id(self):
+        combined_df = self.read_combined_csv()
+        if 'User_ID' in combined_df.columns:
+            last_user_id = combined_df['User_ID'].max()
+            if pd.isna(last_user_id):
+                return 0
+            return int(last_user_id)
+        return 0    
     
     def write_to_csv(self, frame_index, frame_path, landmarks, gaze):
         data_list = []
@@ -48,45 +59,45 @@ class DataSet:
 
         if not os.path.exists(full_file_path):
             with open(full_file_path, mode='w', newline='') as csv_file:
-                fieldnames = ['Index', 'Frame_path']
+                fieldnames = ['Index', 'Frame_path', 'User_ID']
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
 
         with open(full_file_path, mode='a', newline='') as csv_file:
-            fieldnames = ['Index', 'Frame_path']
+            fieldnames = ['Index', 'Frame_path', 'User_ID']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writerow({'Index': index, 'Frame_path': framePath})
+            writer.writerow({'Index': index, 'Frame_path': framePath, 'User_ID': self.user_id})
             
     def write_landmarks_to_csv(self, index, landmarks):
         full_file_path = os.path.join(self.csv_file_path, self.landmarks_file_name)
         if not os.path.exists(full_file_path):
             with open(full_file_path, mode='w', newline='') as csv_file:
-                fieldnames = ['Index', 'Category', 'X', 'Y']
+                fieldnames = ['Index', 'Category', 'X', 'Y', 'User_ID']
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
 
         with open(full_file_path, mode='a', newline='') as csv_file:
-            fieldnames = ['Index', 'Category', 'X', 'Y']
+            fieldnames = ['Index', 'Category', 'X', 'Y', 'User_ID']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
             for category_data in landmarks:
                 category_name = category_data['name']
                 for x, y in category_data['landmarks']:
-                    writer.writerow({'Index': index, 'Category': category_name, 'X': x, 'Y': y})
+                    writer.writerow({'Index': index, 'Category': category_name, 'X': x, 'Y': y, 'User_ID': self.user_id})
                     
     def write_gaze_to_csv(self, index, gaze_x, gaze_y):
         full_file_path = os.path.join(self.csv_file_path, self.gazes_file_name)
 
         if not os.path.exists(full_file_path):
             with open(full_file_path, mode='w', newline='') as csv_file:
-                fieldnames = ['Index', 'Gaze_X', 'Gaze_Y']
+                fieldnames = ['Index', 'Gaze_X', 'Gaze_Y', 'User_ID']
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
 
         with open(full_file_path, mode='a', newline='') as csv_file:
-            fieldnames = ['Index', 'Gaze_X', 'Gaze_Y']
+            fieldnames = ['Index', 'Gaze_X', 'Gaze_Y', 'User_ID']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writerow({'Index': index, 'Gaze_X': gaze_x, 'Gaze_Y': gaze_y})
+            writer.writerow({'Index': index, 'Gaze_X': gaze_x, 'Gaze_Y': gaze_y, 'User_ID': self.user_id})
             
     def load_by_index(self, index):
         landmarks = []
@@ -153,17 +164,33 @@ class DataSet:
 
 
     def combine_csv_files(self, output_file_name='combined_data.csv'):
-        landmarks_df = pd.read_csv(os.path.join(self.csv_file_path, self.landmarks_file_name))
-        gaze_df = pd.read_csv(os.path.join(self.csv_file_path, self.gazes_file_name))
+        landmarks_file_path = os.path.join(self.csv_file_path, self.landmarks_file_name)
+        gaze_file_path = os.path.join(self.csv_file_path, self.gazes_file_name)
+
+        if not os.path.exists(landmarks_file_path):
+            with open(landmarks_file_path, mode='w', newline='') as csv_file:
+                fieldnames = ['Index', 'Category', 'Landmark_X', 'Landmark_Y', 'User_ID']
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                writer.writeheader()
+
+        if not os.path.exists(gaze_file_path):
+            with open(gaze_file_path, mode='w', newline='') as csv_file:
+                fieldnames = ['Index', 'Gaze_X', 'Gaze_Y', 'User_ID']
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                writer.writeheader()
+
+        landmarks_df = pd.read_csv(landmarks_file_path)
+        gaze_df = pd.read_csv(gaze_file_path)
+        print(landmarks_df.columns)
+        print(gaze_df.columns)
 
         # Merge the dataframes based on 'Index'
-        combined_df = pd.merge(landmarks_df, gaze_df, on='Index')
-
+        combined_df = pd.merge(landmarks_df, gaze_df, on='Index', how='outer')
         # Rename columns to match the specified format
-        combined_df.rename(columns={'X': 'Landmark_X', 'Y': 'Landmark_Y', 'Gaze_X': 'Gaze_X', 'Gaze_Y': 'Gaze_Y'}, inplace=True)
+        combined_df.rename(columns={'X': 'Landmark_X', 'Y': 'Landmark_Y', 'Gaze_X': 'Gaze_X', 'Gaze_Y': 'Gaze_Y', 'User_ID_x' : 'User_ID'}, inplace=True)
 
         # Reorder columns to match the desired format
-        combined_df = combined_df[['Index', 'Category', 'Landmark_X', 'Landmark_Y', 'Gaze_X', 'Gaze_Y']]
+        combined_df = combined_df[['Index', 'Category', 'Landmark_X', 'Landmark_Y', 'Gaze_X', 'Gaze_Y', 'User_ID']]
 
         # Save the combined dataframe to a new CSV file
         combined_df.to_csv(os.path.join(self.csv_file_path, output_file_name), index=False)
