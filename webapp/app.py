@@ -10,7 +10,7 @@ from properties.ApplicationProperties import ApplicationProperties
 import base64
 import random
 import numpy as np
-
+from emotion_extraction import emotionFinder
 
 import subprocess
 # Define the wget command as a list of arguments
@@ -86,14 +86,20 @@ def video_feed():
 
 @app.route('/save_image', methods=['POST'])
 def save_image():
-    frame_data = request.json['image_data']
+    frame_data = request.json['image_data']    
     frame, raw = video_processor.save_frame(frame_data)
+
     landmarks, output_frame = video_processor.process_frame(frame)
     gaze = display_processor.get_point()
     print(gaze)
     index = video_processor.get_frame_count()
     data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
-    _, jpeg_image = cv2.imencode('.jpg', output_frame)
+
+    image_with_emotion = emotionFinder.process_image(output_frame)
+
+    video_processor.save_processed_frame(image_with_emotion)
+
+    _, jpeg_image = cv2.imencode('.jpg', image_with_emotion)
 
     jpeg_image_data = jpeg_image.tobytes()
 

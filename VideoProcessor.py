@@ -52,7 +52,6 @@ class VideoProcessor:
             frame_count += 1
 
 
-
     def save_frame(self, frame_data):
         # Create the directory if it doesn't exist
         os.makedirs(self.frame_save_path, exist_ok=True)
@@ -63,12 +62,13 @@ class VideoProcessor:
         saved_image = cv2.imread(file_path)
         return saved_image, frame_data
     
-    def save_frame_processed(self, frame):
+    def save_processed_frame(self, image):
         # Create the directory if it doesn't exist
-        os.makedirs(self.frame_save_path, exist_ok=True)
-        filename = f'{self.subjectID}_1_frame_{self.frame_count}.jpg'
-        file_path = os.path.join(self.frame_save_path, filename)
-        util.save_base64_image_2(frame, file_path)
-        saved_image = cv2.imread(file_path)
-        return saved_image
+        os.makedirs(self.frame_save_path+'/processed', exist_ok=True)
+        filename = f'{self.subjectID}_frame_{self.frame_count-1}.jpg'
+        file_path = os.path.join(self.frame_save_path+'/processed', filename)
+        print("filePATHH")
+        print(file_path)
+        cv2.imwrite(file_path, image)
+        return image
         
