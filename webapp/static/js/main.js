@@ -5,7 +5,7 @@ var context = canvas.getContext('2d');
 var frameCount = 0;
 var videoElement;
 var framesContainer = document.getElementById('framesContainer');
-var stopRecordingButton = document.getElementById('stopRecordingButton');
+var eyeTrackerContainer = document.getElementById('eyeTrackerContainer')
 var currentForm;
 
 function startRecording() {
@@ -15,7 +15,7 @@ function startRecording() {
             videoElement = document.createElement('video');
             videoElement.srcObject = stream;
             videoElement.autoplay = true;
-            document.getElementById('videoContainer').appendChild(videoElement);
+            // document.getElementById('videoContainer').appendChild(videoElement);
             return getForm(); // Return the Promise from getForm()
         })
         .then(function(form) {
@@ -86,8 +86,8 @@ function sendImageData(imageData) {
 function stopRecording() {
     clearInterval(frameInterval);
     videoStream.getVideoTracks()[0].stop();
-    var videoContainer = document.getElementById('videoContainer');
-    videoContainer.innerHTML = '';
+    // var videoContainer = document.getElementById('videoContainer');
+    // videoContainer.innerHTML = '';
     frameCount = 0;
 }
 
@@ -144,7 +144,7 @@ function showForm(formData) {
     var videoElement = document.createElement('video');
     videoElement.src = formData.content;
     videoElement.classList.add('form-content', 'fullscreen');
-    framesContainer.appendChild(videoElement);
+    framesContainer.appendChild(videoElement)
   } else if (formData.type === 'slideshow') {
     var images = formData.content;
     var totalImages = images.length;
@@ -170,5 +170,21 @@ function showForm(formData) {
     documentIframe.src = formData.content;
     documentIframe.classList.add('form-content', 'fullscreen');
     framesContainer.appendChild(documentIframe);
-  }
+  } else if (formData.type === 'stroop') {
+    fetch('/stroop', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => response.text())
+      .then(template => {
+        eyeTrackerContainer.innerHTML = ''; // Clear previous content
+        eyeTrackerContainer.innerHTML = template;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
 }

@@ -71,8 +71,12 @@ forms = {
     'form4': {
         'type': 'special',
         'time_interval': 5  # Time interval in seconds for this form
+    },
+    'form5': {
+        'type': 'stroop',
+        'content': 'stroop.html',
+        'time_interval': 15  # Time interval in seconds for this form
     }
-    
 }
 
 
@@ -154,6 +158,15 @@ def generate_page():
     response = jsonify(image_data=base64_image_data)
 
     return response
+
+@app.route('/stroop', methods=['POST'])
+def stroop():
+    formData = request.json
+
+    content = formData['content']
+    # Render the template with the content
+    rendered_template = render_template(content)
+    return rendered_template
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function
