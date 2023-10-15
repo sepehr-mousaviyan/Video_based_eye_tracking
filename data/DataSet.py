@@ -181,8 +181,6 @@ class DataSet:
 
         landmarks_df = pd.read_csv(landmarks_file_path)
         gaze_df = pd.read_csv(gaze_file_path)
-        print(landmarks_df.columns)
-        print(gaze_df.columns)
 
         # Merge the dataframes based on 'Index'
         combined_df = pd.merge(landmarks_df, gaze_df, on='Index', how='outer')
