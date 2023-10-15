@@ -7,7 +7,12 @@ from collections import deque
 
 from hsemotion_onnx.facial_emotions import HSEmotionRecognizer
 
-def process_image(image):
+def process_frames_emotion(image):
+    # In here we make an array that gives us every emotion number
+    emotions = [None]*8
+    # Anger: emotions[0], Contempt: emotions[1], Disgust: emotions[2], Fear: emotions[3]
+    # Happiness: emotions[4], Neutral: emotions[5], Sadness: emotions[6], Surprise: emotions[7]
+
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
     drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
@@ -62,9 +67,17 @@ def process_image(image):
             start = time.time()
             emotion, scores = fer.predict_emotions(face_img, logits=True)
             elapsed = (time.time() - start)
+            #
+            # recent_scores = []
+            # (DOWN) we need to get mean in here because if we don't it changes every moment but we can set a threshould for example in every 10 frames pop one
             recent_scores.append(scores)
 
             scores = np.mean(recent_scores, axis=0)
+            
+            emotions = scores
+            
+            # (UP) this part plays a crucial rule
+            
             emotion = np.argmax(scores)
             print(scores, fer.idx_to_class[emotion], 'Emotion elapsed:', elapsed)
 
@@ -78,7 +91,7 @@ def process_image(image):
     elapsed = (time.time() - total_start)
     print('Total frame processing elapsed:', elapsed)
     face_mesh.close()
-    return image
+    return image, emotions
 
 def process_video(videofile=0):
     mp_face_mesh = mp.solutions.face_mesh
@@ -146,11 +159,21 @@ def process_video(videofile=0):
                 
                 start = time.time()
                 emotion,scores=fer.predict_emotions(face_img,logits=True)
+                # print(emotion,'\n')
                 elapsed = (time.time() - start)
+                #
+                # recent_scores = []
                 recent_scores.append(scores)
-
                 scores=np.mean(recent_scores,axis=0)
+                print(scores)
+                print('\n')
+                
                 emotion=np.argmax(scores)
+                #Anger: 0, Contempt: 1, Disgust:2, Fear:3, Happiness:4, Neutral:5, Sadness:6,  Surprise:7
+
+                for i in range(0,8):
+                    print(fer.idx_to_class[i],'\n')
+                    
                 print(scores,fer.idx_to_class[emotion], 'Emotion elapsed:',elapsed)
                 
                 cv2.rectangle(image, (x1,y1), (x2,y2), (255, 0, 0), 2)
