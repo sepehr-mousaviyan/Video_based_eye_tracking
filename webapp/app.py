@@ -94,10 +94,10 @@ def save_image():
     frame, raw = video_processor.save_frame(frame_data)
 
     landmarks, output_frame = video_processor.process_frame(frame)
-    # gaze = display_processor.get_point()
-    # print(gaze)
-    # index = video_processor.get_frame_count()
-    # data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
+    gaze = display_processor.get_point()
+    print(gaze)
+    index = video_processor.get_frame_count()
+    data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
     image_with_emotion, emotions = emotionFinder.process_frames_emotion(output_frame)
 
@@ -160,8 +160,13 @@ def generate_page():
     return response
 
 @app.route("/stroop")
-def index():
+def stroop():
     return render_template("stroop.html")
+
+@app.route("/userId")
+def getCurrUserID():
+    user_id = data_set.get_curr_user_id()  # Assuming `data_set` is defined and returns the current user ID
+    return jsonify({'userId': user_id})
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function

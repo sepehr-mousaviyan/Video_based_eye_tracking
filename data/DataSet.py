@@ -24,6 +24,9 @@ class DataSet:
             return int(last_user_id)
         return 0    
     
+    def get_curr_user_id(self):
+        return self.user_id
+    
     def write_to_csv(self, frame_index, frame_path, landmarks, gaze):
         data_list = []
 

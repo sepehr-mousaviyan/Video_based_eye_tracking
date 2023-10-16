@@ -1,3 +1,7 @@
+/***************** 
+ * stroop *
+ *****************/
+
 import { core, data, sound, util, visual, hardware } from '../lib/psychojs-2023.2.3.js';
 const { PsychoJS } = core;
 const { TrialHandler, MultiStairHandler } = data;
@@ -70,12 +74,23 @@ psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.EXP);
 
 var currentLoop;
 var frameDur;
+var userId;
+fetch('/userId')
+.then(response => response.json())
+.then(data => {
+  // Set the value of expInfo['userId'] with the received data
+  userId = data.userId;
+})
+.catch(error => {
+  console.error('Error:', error);
+});
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // add a simple timestamp
   expInfo['expName'] = expName;
   expInfo['psychopyVersion'] = '2023.2.3';
   expInfo['OS'] = window.navigator.platform;
+  expInfo['userId'] = userId
 
 
   // store frame rate of monitor if we can measure it successfully
@@ -90,7 +105,7 @@ async function updateInfo() {
   
 
   
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expName}_${expInfo["date"]}_${userId}`);
   psychoJS.experiment.field_separator = '\t';
 
 
@@ -112,7 +127,7 @@ async function experimentInit() {
   instrText = new visual.TextStim({
     win: psychoJS.window,
     name: 'instrText',
-    text: 'Remember, choose the color of the letters, ignoring the word:\n\nleft = red\ndown = green\nright = blue',
+    text: 'Remember, choose the color of the letters, ignoring the word:\n\nr = red\ng = green\nb = blue',
     font: 'Open Sans',
     units: undefined, 
     pos: [0, 0], height: 0.05,  wrapWidth: undefined, ori: 0.0,
@@ -400,7 +415,7 @@ function trialRoutineEachFrame() {
     }
     
     if (response.status === PsychoJS.Status.STARTED) {
-      let theseKeys = response.getKeys({keyList: ['left', 'right', 'down'], waitRelease: false});
+      let theseKeys = response.getKeys({keyList: ['r', 'g', 'b'], waitRelease: false});
       _response_allKeys = _response_allKeys.concat(theseKeys);
       if (_response_allKeys.length > 0) {
         response.keys = _response_allKeys[_response_allKeys.length - 1].name;  // just the last key pressed
