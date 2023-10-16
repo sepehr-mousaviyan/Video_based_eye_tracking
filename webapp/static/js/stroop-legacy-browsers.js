@@ -1,10 +1,10 @@
 ﻿/***************** 
- * Untitled *
+ * stroop *
  *****************/
 
 
 // store info about the experiment session:
-let expName = 'untitled';  // from the Builder filename that created this script
+let expName = 'stroop';  // from the Builder filename that created this script
 let expInfo = {
     'participant': `${util.pad(Number.parseFloat(util.randint(0, 999999)).toFixed(0), 6)}`,
     'session': '001',
@@ -57,7 +57,7 @@ psychoJS.start({
   expInfo: expInfo,
   resources: [
     // resources:
-    {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
+    {'name': 'conditions.xlsx', 'path': 'static/conditions.xlsx'},
   ]
 });
 
