@@ -75,7 +75,7 @@ forms = {
     'form5': {
         'type': 'stroop',
         'content': 'stroop.html',
-        'time_interval': 15  # Time interval in seconds for this form
+        'time_interval': 100  # Time interval in seconds for this form
     }
 }
 
@@ -94,12 +94,12 @@ def save_image():
     frame, raw = video_processor.save_frame(frame_data)
 
     landmarks, output_frame = video_processor.process_frame(frame)
-    gaze = display_processor.get_point()
-    print(gaze)
-    index = video_processor.get_frame_count()
-    data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
+    # gaze = display_processor.get_point()
+    # print(gaze)
+    # index = video_processor.get_frame_count()
+    # data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
-    image_with_emotion = emotionFinder.process_image(output_frame)
+    image_with_emotion, emotions = emotionFinder.process_frames_emotion(output_frame)
 
     video_processor.save_processed_frame(image_with_emotion)
 
@@ -159,14 +159,9 @@ def generate_page():
 
     return response
 
-@app.route('/stroop', methods=['POST'])
-def stroop():
-    formData = request.json
-
-    content = formData['content']
-    # Render the template with the content
-    rendered_template = render_template(content)
-    return rendered_template
+@app.route("/stroop")
+def index():
+    return render_template("stroop.html")
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function

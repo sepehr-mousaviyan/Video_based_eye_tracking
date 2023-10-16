@@ -26,8 +26,7 @@ function startRecording() {
             // Get the current form's time interval
             var timeInterval = currentForm.time_interval * 10000;
             frameInterval = setInterval(captureFrame, 1000 / 0.5);
-            setTimeout(stopRecording, timeInterval);
-            console.log('Recording finished');
+            // setTimeout(stopRecording, timeInterval);
         })
         .catch(function(error) {
             console.error('Error accessing camera:', error);
@@ -171,20 +170,6 @@ function showForm(formData) {
     documentIframe.classList.add('form-content', 'fullscreen');
     framesContainer.appendChild(documentIframe);
   } else if (formData.type === 'stroop') {
-    fetch('/stroop', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(response => response.text())
-      .then(template => {
-        eyeTrackerContainer.innerHTML = ''; // Clear previous content
-        eyeTrackerContainer.innerHTML = template;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      window.location.href = "/stroop";
     }
 }
