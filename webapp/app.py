@@ -74,8 +74,21 @@ forms = {
     },
     'form5': {
         'type': 'stroop',
-        'content': 'stroop.html',
-        'time_interval': 100  # Time interval in seconds for this form
+        'content': [
+            'static/forms/image1.jpeg',
+            'static/forms/image2.jpeg',
+            'stroop.html'
+        ],
+        'time_interval': 3  # Time interval in seconds for this form
+    },
+    'form6': {
+        'type': 'stroop',
+        'content': [
+            'static/forms/image1.jpeg',
+            'static/forms/image2.jpeg',
+            'stroop.html'
+        ],
+        'time_interval': 3  # Time interval in seconds for this form
     }
 }
 

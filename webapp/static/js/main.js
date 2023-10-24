@@ -170,6 +170,36 @@ function showForm(formData) {
     documentIframe.classList.add('form-content', 'fullscreen');
     framesContainer.appendChild(documentIframe);
   } else if (formData.type === 'stroop') {
-      window.location.href = "/stroop";
+    var images = formData.content.filter(function(item) {
+      return item.endsWith('.jpg') || item.endsWith(".jpeg") || item.endsWith(".png"); // Filter only .jpg files from the content array
+    });
+    var totalImages = images.length;
+    var currentIndex = 0;
+    var slideshowInterval = formData.time_interval * 1000; // Convert seconds to milliseconds
+  
+    function showNextImage() {
+      var imageElement = document.createElement('img');
+      imageElement.src = images[currentIndex];
+      imageElement.classList.add('form-content', 'fullscreen');
+      framesContainer.innerHTML = ''; // Clear previous image
+      framesContainer.appendChild(imageElement);
+      currentIndex++;
+  
+      if (currentIndex === totalImages) {
+        clearInterval(slideshowIntervalId);
+        redirectToStroopPage();
+      }
     }
+  
+    function redirectToStroopPage() {
+      window.location.href = "/stroop"; 
+    }
+  
+    showNextImage(); // Show the first image immediately
+    var slideshowIntervalId = setInterval(showNextImage, slideshowInterval);
+  }
+  // else if (formData.type === 'stroop') {
+      
+  //     window.location.href = "/stroop";
+  //   }
 }

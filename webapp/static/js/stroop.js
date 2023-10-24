@@ -10,6 +10,19 @@ const { Scheduler } = util;
 const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
 
+function startRecording() {
+  navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+          videoStream = stream;
+          videoElement = document.createElement('video');
+          videoElement.srcObject = stream;
+          videoElement.autoplay = true;
+          // document.getElementById('videoContainer').appendChild(videoElement);
+      })
+      .catch(function(error) {
+          console.error('Error accessing camera:', error);
+      });
+}
 
 // store info about the experiment session:
 let expName = 'stroop';  // from the Builder filename that created this script
@@ -300,7 +313,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
     });
     psychoJS.experiment.addLoop(trials); // add the loop to the experiment
     currentLoop = trials;  // we're now the current loop
-    
+    startRecording()
     // Schedule all the trials in the trialList:
     for (const thisTrial of trials) {
       snapshot = trials.getSnapshot();
