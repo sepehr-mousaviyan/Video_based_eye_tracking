@@ -3,26 +3,20 @@
  *****************/
 
 import { core, data, sound, util, visual, hardware } from '../lib/psychojs-2023.2.3.js';
+// import { startRecording, stopRecording } from './main.js';
+// import { videoStream } from './main.js';
+import { captureFrame } from './main.js';
 const { PsychoJS } = core;
 const { TrialHandler, MultiStairHandler } = data;
 const { Scheduler } = util;
 //some handy aliases as in the psychopy scripts;
 const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
+var videoStream;
+var frameInterval;
+var frameCount = 0;
+var videoElement = document.createElement('video'); // Create video element
 
-function startRecording() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-          videoStream = stream;
-          videoElement = document.createElement('video');
-          videoElement.srcObject = stream;
-          videoElement.autoplay = true;
-          // document.getElementById('videoContainer').appendChild(videoElement);
-      })
-      .catch(function(error) {
-          console.error('Error accessing camera:', error);
-      });
-}
 
 // store info about the experiment session:
 let expName = 'stroop';  // from the Builder filename that created this script
@@ -30,6 +24,37 @@ let expInfo = {
     'participant': `${util.pad(Number.parseFloat(util.randint(0, 999999)).toFixed(0), 6)}`,
     'session': '001',
 };
+
+
+const requestCameraPermission = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoStream = stream;
+    videoElement.srcObject = stream;
+  } catch (error) {
+    console.error('Error requesting camera permission:', error);
+    throw error; // Rethrow the error to be caught in the startTask function
+  }
+};
+
+const startRecording = async () => {
+  videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  // document.getElementById('videoContainer').appendChild(videoElement);
+  // var timeInterval = currentForm.time_interval * 1000;
+  frameInterval = setInterval(captureFrame, 1000 / 0.5);
+  // setTimeout(stopRecording(), timeInterval);
+};
+
+function stopRecording() {
+  clearInterval(frameInterval);
+  videoStream.getVideoTracks()[0].stop();
+
+  // var videoContainer = document.getElementById('videoContainer');
+  frameCount = 0;
+}
+
+await requestCameraPermission(); // Wait for camera permission
 
 // Start code blocks for 'Before Experiment'
 // init psychoJS:
@@ -332,6 +357,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
 async function trialsLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(trials);
+  stopRecording(videoStream)
   // update the current loop from the ExperimentHandler
   if (psychoJS.experiment._unfinishedLoops.length>0)
     currentLoop = psychoJS.experiment._unfinishedLoops.at(-1);
