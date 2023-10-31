@@ -8,10 +8,10 @@
 </head>
 <body>
     <h1>Eye Tracker</h1>
-    <button onclick="startRecording()">Start Task</button>
+    <button id="clk"> Start Task</button>
     <div id="videoContainer"></div>
     <div id="framesContainer"></div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" type="module"></script>
 </body>
 </html>

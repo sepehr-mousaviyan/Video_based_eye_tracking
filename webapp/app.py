@@ -57,11 +57,10 @@ forms = {
     'form2': {
         'type': 'slideshow',
         'content': [
-            'static/forms/image1.jpg',
-            'static/forms/image2.jpg',
-            'static/forms/image3.jpg'
+            'static/forms/image1.jpeg',
+            'static/forms/image2.jpeg'
         ],
-        'time_interval': 5  # Time interval in seconds for this form
+        'time_interval': 2  # Time interval in seconds for this form
     },
     'form3': {
         'type': 'document',
@@ -79,7 +78,7 @@ forms = {
             'static/forms/image2.jpeg',
             'stroop.html'
         ],
-        'time_interval': 3  # Time interval in seconds for this form
+        'time_interval': 4  # Time interval in seconds for this form
     },
     'form6': {
         'type': 'stroop',
@@ -88,13 +87,13 @@ forms = {
             'static/forms/image2.jpeg',
             'stroop.html'
         ],
-        'time_interval': 3  # Time interval in seconds for this form
+        'time_interval': 2  # Time interval in seconds for this form
     }
 }
 
 
 @app.route('/')
-def camera_permission():
+def eye_tracker():
     return render_template('eye_tracker.html')
 
 @app.route('/video_feed')

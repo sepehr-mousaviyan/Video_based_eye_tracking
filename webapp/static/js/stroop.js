@@ -3,26 +3,23 @@
  *****************/
 
 import { core, data, sound, util, visual, hardware } from '../lib/psychojs-2023.2.3.js';
+// import { startRecording, stopRecording } from './main.js';
+// import { videoStream } from './main.js';
+// import { captureFrame } from './main.js';
 const { PsychoJS } = core;
 const { TrialHandler, MultiStairHandler } = data;
 const { Scheduler } = util;
 //some handy aliases as in the psychopy scripts;
 const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
+var videoStream;
+var frameInterval;
+var frameCount = 0;
+var canvas = document.createElement('canvas');
+var context = canvas.getContext('2d');
+var videoElement; // Create video element
+var stream;
 
-function startRecording() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-          videoStream = stream;
-          videoElement = document.createElement('video');
-          videoElement.srcObject = stream;
-          videoElement.autoplay = true;
-          // document.getElementById('videoContainer').appendChild(videoElement);
-      })
-      .catch(function(error) {
-          console.error('Error accessing camera:', error);
-      });
-}
 
 // store info about the experiment session:
 let expName = 'stroop';  // from the Builder filename that created this script
@@ -30,6 +27,80 @@ let expInfo = {
     'participant': `${util.pad(Number.parseFloat(util.randint(0, 999999)).toFixed(0), 6)}`,
     'session': '001',
 };
+
+
+function captureFrame() {
+  canvas.width = videoElement.videoWidth;
+  canvas.height = videoElement.videoHeight;
+  context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+  var imageData = canvas.toDataURL('image/jpeg');
+
+  var frameImage = document.createElement('img');
+  frameImage.src = imageData;
+  frameImage.classList.add('frame');
+
+  frameCount++;
+  console.log('Frame captured: ' + frameCount);
+
+  // Send the captured image data to the server
+  sendImageData(imageData);
+}
+
+function sendImageData(imageData) {
+  fetch('/save_image', {
+      method: 'POST',
+      body: JSON.stringify({ image_data: imageData }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(data) {
+          // Create an image element and set its source to the received image data
+          var frameImage = document.createElement('img');
+          frameImage.src = 'data:image/jpeg;base64,' + data.image_data;
+          frameImage.classList.add('frame');
+
+          // Append the image element to the frames container
+          // framesContainer.appendChild(frameImage);
+
+          console.log('Image data received and displayed');
+      })
+      .catch(function(error) {
+          console.error('Error receiving image data:', error);
+      });
+}
+
+const requestCameraPermission = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  } catch (error) {
+    console.error('Error requesting camera permission:', error);
+    throw error; // Rethrow the error to be caught in the startTask function
+  }
+};
+
+function startRecording() {
+    videoStream = stream;
+    videoElement = document.createElement('video');
+    videoElement.srcObject = stream;
+    videoElement.autoplay = true;
+    // document.getElementById('videoContainer').appendChild(videoElement)
+    // Get the current form's time interval
+    frameInterval = setInterval(captureFrame, 1000 / 0.5);
+      
+
+function stopRecording() {
+  clearInterval(frameInterval);
+  videoStream.getVideoTracks()[0].stop();
+
+  // var videoContainer = document.getElementById('videoContainer');
+  frameCount = 0;
+}
+}
+await requestCameraPermission()
 
 // Start code blocks for 'Before Experiment'
 // init psychoJS:
@@ -332,6 +403,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
 async function trialsLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(trials);
+  stopRecording(videoStream)
   // update the current loop from the ExperimentHandler
   if (psychoJS.experiment._unfinishedLoops.length>0)
     currentLoop = psychoJS.experiment._unfinishedLoops.at(-1);
