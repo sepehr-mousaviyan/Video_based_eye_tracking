@@ -3,35 +3,49 @@ var frameInterval;
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 var frameCount = 0;
-var videoElement;
+var videoElement = document.createElement('video'); // Create video element
 var framesContainer = document.getElementById('framesContainer');
 var eyeTrackerContainer = document.getElementById('eyeTrackerContainer')
 var currentForm;
+document.getElementById("clk").onclick=async() => {
+  console.log()
+  await startTask();
+};
 
-function startRecording() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
-            videoStream = stream;
-            videoElement = document.createElement('video');
-            videoElement.srcObject = stream;
-            videoElement.autoplay = true;
-            // document.getElementById('videoContainer').appendChild(videoElement);
-            return getForm(); // Return the Promise from getForm()
-        })
-        .then(function(form) {
-            currentForm = form; // Assign the received form to the currentForm variable
-            console.log('Current form:', currentForm);
-            framesContainer.innerHTML = ''; // Clear the frames container
-            showForm(currentForm);
-            // Get the current form's time interval
-            var timeInterval = currentForm.time_interval * 10000;
-            frameInterval = setInterval(captureFrame, 1000 / 0.5);
-            // setTimeout(stopRecording, timeInterval);
-        })
-        .catch(function(error) {
-            console.error('Error accessing camera:', error);
-        });
+async function startTask() {
+  try {
+    const form = await getForm();
+    await requestCameraPermission(); // Wait for camera permission
+    showForm(form);
+    if (form.type !== 'stroop') {
+      framesContainer.innerHTML = ''; // Clear the frames container
+      startRecording();
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 }
+
+// Separate function to request camera permission
+const requestCameraPermission = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoStream = stream;
+    videoElement.srcObject = stream;
+  } catch (error) {
+    console.error('Error requesting camera permission:', error);
+    throw error; // Rethrow the error to be caught in the startTask function
+  }
+};
+
+const startRecording = async () => {
+  videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  // document.getElementById('videoContainer').appendChild(videoElement);
+  // var timeInterval = currentForm.time_interval * 1000;
+  frameInterval = setInterval(captureFrame, 1000 / 0.5);
+  // setTimeout(stopRecording(), timeInterval);
+};
 
 function captureFrame() {
     canvas.width = videoElement.videoWidth;
@@ -85,8 +99,9 @@ function sendImageData(imageData) {
 function stopRecording() {
     clearInterval(frameInterval);
     videoStream.getVideoTracks()[0].stop();
+
     // var videoContainer = document.getElementById('videoContainer');
-    // videoContainer.innerHTML = '';
+    eyeTrackerContainer.innerHTML = '';
     frameCount = 0;
 }
 
@@ -148,6 +163,7 @@ function showForm(formData) {
     var images = formData.content;
     var totalImages = images.length;
     var currentIndex = 0;
+    var timeInterval = formData.time_interval * 10000 / totalImages;
 
     function showNextImage() {
       var imageElement = document.createElement('img');
@@ -159,11 +175,12 @@ function showForm(formData) {
 
       if (currentIndex === totalImages) {
         clearInterval(slideshowInterval);
+        stopRecording()
       }
     }
 
     showNextImage(); // Show the first image immediately
-    var slideshowInterval = setInterval(showNextImage, 5000);
+    var slideshowInterval = setInterval(showNextImage, timeInterval);
   } else if (formData.type === 'document') {
     var documentIframe = document.createElement('iframe');
     documentIframe.src = formData.content;
@@ -171,12 +188,12 @@ function showForm(formData) {
     framesContainer.appendChild(documentIframe);
   } else if (formData.type === 'stroop') {
     var images = formData.content.filter(function(item) {
-      return item.endsWith('.jpg') || item.endsWith(".jpeg") || item.endsWith(".png"); // Filter only .jpg files from the content array
+      return item.endsWith('.jpg') || item.endsWith(".jpeg") || item.endsWith(".png"); // Filter only image files from the content array
     });
     var totalImages = images.length;
     var currentIndex = 0;
-    var slideshowInterval = formData.time_interval * 1000; // Convert seconds to milliseconds
-  
+    var timeInterval = formData.time_interval * 1000 / totalImages;
+
     function showNextImage() {
       var imageElement = document.createElement('img');
       imageElement.src = images[currentIndex];
@@ -185,8 +202,8 @@ function showForm(formData) {
       framesContainer.appendChild(imageElement);
       currentIndex++;
   
-      if (currentIndex === totalImages) {
-        clearInterval(slideshowIntervalId);
+      if (currentIndex === totalImages+1) {
+        clearInterval(slideshowInterval);
         redirectToStroopPage();
       }
     }
@@ -196,10 +213,12 @@ function showForm(formData) {
     }
   
     showNextImage(); // Show the first image immediately
-    var slideshowIntervalId = setInterval(showNextImage, slideshowInterval);
+    var slideshowIntervalId = setInterval(showNextImage, timeInterval);
   }
   // else if (formData.type === 'stroop') {
       
   //     window.location.href = "/stroop";
   //   }
 }
+
+export {startRecording, stopRecording, startTask, captureFrame}
