@@ -2,7 +2,7 @@ import cv2
 import os
 import Util as util
 from landmark_extraction import LandmarkFinder
-from gaze_extraction import GazeFinder
+from gaze_extraction import GazeDirectionFinder
 from properties.ApplicationProperties import ApplicationProperties
 
 

@@ -25,20 +25,21 @@ def extract_directon(frame):
     bboxes = results.bboxes
     landmarks = results.landmarks
     scores = results.scores
+    # print(salam)
     return frame
 
-cap = cv2.VideoCapture(0)
-while(True):
-    _, frame = cap.read()    
-    # Process frame and visualize
-    results = gaze_pipeline.step(frame)
-    # print(type(results.pitch))
-    results.pitch.fill(0)
-    frame = render(frame, results)
-    cv2.imshow('frame', frame)
-    cv2.waitKey(0)
+# cap = cv2.VideoCapture(0)
+# while(True):
+#     _, frame = cap.read()    
+#     # Process frame and visualize
+#     results = gaze_pipeline.step(frame)
+#     # print(type(results.pitch))
+#     results.pitch.fill(0)
+#     frame = render(frame, results)
+#     cv2.imshow('frame', frame)
+#     cv2.waitKey(0)
 
-print(type(frame))
+# print(type(frame))
 
 
 # print(yaw,pitch)
