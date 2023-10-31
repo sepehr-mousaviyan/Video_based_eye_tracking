@@ -3,7 +3,7 @@ var frameInterval;
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 var frameCount = 0;
-var videoElement = document.createElement('video'); // Create video element
+var videoElement; // Create video element
 var framesContainer = document.getElementById('framesContainer');
 var eyeTrackerContainer = document.getElementById('eyeTrackerContainer')
 var currentForm;
@@ -15,7 +15,7 @@ document.getElementById("clk").onclick=async() => {
 async function startTask() {
   try {
     const form = await getForm();
-    await requestCameraPermission(); // Wait for camera permission
+    // await requestCameraPermission(); // Wait for camera permission
     showForm(form);
     if (form.type !== 'stroop') {
       framesContainer.innerHTML = ''; // Clear the frames container
