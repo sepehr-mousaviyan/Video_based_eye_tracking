@@ -18,6 +18,7 @@ var frameCount = 0;
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 var videoElement; // Create video element
+var stream;
 
 
 // store info about the experiment session:
@@ -72,21 +73,24 @@ function sendImageData(imageData) {
       });
 }
 
+const requestCameraPermission = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  } catch (error) {
+    console.error('Error requesting camera permission:', error);
+    throw error; // Rethrow the error to be caught in the startTask function
+  }
+};
 
 function startRecording() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-          videoStream = stream;
-          videoElement = document.createElement('video');
-          videoElement.srcObject = stream;
-          videoElement.autoplay = true;
-          // document.getElementById('videoContainer').appendChild(videoElement)
-          // Get the current form's time interval
-          frameInterval = setInterval(captureFrame, 1000 / 0.5);
-      })
-      .catch(function(error) {
-          console.error('Error accessing camera:', error);
-      });
+    videoStream = stream;
+    videoElement = document.createElement('video');
+    videoElement.srcObject = stream;
+    videoElement.autoplay = true;
+    // document.getElementById('videoContainer').appendChild(videoElement)
+    // Get the current form's time interval
+    frameInterval = setInterval(captureFrame, 1000 / 0.5);
+      
 
 function stopRecording() {
   clearInterval(frameInterval);
@@ -96,7 +100,7 @@ function stopRecording() {
   frameCount = 0;
 }
 }
-
+await requestCameraPermission()
 
 // Start code blocks for 'Before Experiment'
 // init psychoJS:
