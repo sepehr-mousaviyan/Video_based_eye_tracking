@@ -71,8 +71,25 @@ forms = {
     'form4': {
         'type': 'special',
         'time_interval': 5  # Time interval in seconds for this form
+    },
+    'form5': {
+        'type': 'stroop',
+        'content': [
+            'static/forms/image1.jpeg',
+            'static/forms/image2.jpeg',
+            'stroop.html'
+        ],
+        'time_interval': 3  # Time interval in seconds for this form
+    },
+    'form6': {
+        'type': 'stroop',
+        'content': [
+            'static/forms/image1.jpeg',
+            'static/forms/image2.jpeg',
+            'stroop.html'
+        ],
+        'time_interval': 3  # Time interval in seconds for this form
     }
-    
 }
 
 
@@ -95,7 +112,7 @@ def save_image():
     index = video_processor.get_frame_count()
     data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
-    image_with_emotion = emotionFinder.process_image(output_frame)
+    image_with_emotion, emotions = emotionFinder.process_frames_emotion(output_frame)
 
     video_processor.save_processed_frame(image_with_emotion)
 
@@ -154,6 +171,15 @@ def generate_page():
     response = jsonify(image_data=base64_image_data)
 
     return response
+
+@app.route("/stroop")
+def stroop():
+    return render_template("stroop.html")
+
+@app.route("/userId")
+def getCurrUserID():
+    user_id = data_set.get_curr_user_id()  # Assuming `data_set` is defined and returns the current user ID
+    return jsonify({'userId': user_id})
 
 if __name__ == '__main__':
     # configure_logging()  # Call the logging configuration function

@@ -5,7 +5,7 @@ var context = canvas.getContext('2d');
 var frameCount = 0;
 var videoElement;
 var framesContainer = document.getElementById('framesContainer');
-var stopRecordingButton = document.getElementById('stopRecordingButton');
+var eyeTrackerContainer = document.getElementById('eyeTrackerContainer')
 var currentForm;
 
 function startRecording() {
@@ -15,7 +15,7 @@ function startRecording() {
             videoElement = document.createElement('video');
             videoElement.srcObject = stream;
             videoElement.autoplay = true;
-            document.getElementById('videoContainer').appendChild(videoElement);
+            // document.getElementById('videoContainer').appendChild(videoElement);
             return getForm(); // Return the Promise from getForm()
         })
         .then(function(form) {
@@ -26,8 +26,7 @@ function startRecording() {
             // Get the current form's time interval
             var timeInterval = currentForm.time_interval * 10000;
             frameInterval = setInterval(captureFrame, 1000 / 0.5);
-            setTimeout(stopRecording, timeInterval);
-            console.log('Recording finished');
+            // setTimeout(stopRecording, timeInterval);
         })
         .catch(function(error) {
             console.error('Error accessing camera:', error);
@@ -86,8 +85,8 @@ function sendImageData(imageData) {
 function stopRecording() {
     clearInterval(frameInterval);
     videoStream.getVideoTracks()[0].stop();
-    var videoContainer = document.getElementById('videoContainer');
-    videoContainer.innerHTML = '';
+    // var videoContainer = document.getElementById('videoContainer');
+    // videoContainer.innerHTML = '';
     frameCount = 0;
 }
 
@@ -144,7 +143,7 @@ function showForm(formData) {
     var videoElement = document.createElement('video');
     videoElement.src = formData.content;
     videoElement.classList.add('form-content', 'fullscreen');
-    framesContainer.appendChild(videoElement);
+    framesContainer.appendChild(videoElement)
   } else if (formData.type === 'slideshow') {
     var images = formData.content;
     var totalImages = images.length;
@@ -170,5 +169,37 @@ function showForm(formData) {
     documentIframe.src = formData.content;
     documentIframe.classList.add('form-content', 'fullscreen');
     framesContainer.appendChild(documentIframe);
+  } else if (formData.type === 'stroop') {
+    var images = formData.content.filter(function(item) {
+      return item.endsWith('.jpg') || item.endsWith(".jpeg") || item.endsWith(".png"); // Filter only .jpg files from the content array
+    });
+    var totalImages = images.length;
+    var currentIndex = 0;
+    var slideshowInterval = formData.time_interval * 1000; // Convert seconds to milliseconds
+  
+    function showNextImage() {
+      var imageElement = document.createElement('img');
+      imageElement.src = images[currentIndex];
+      imageElement.classList.add('form-content', 'fullscreen');
+      framesContainer.innerHTML = ''; // Clear previous image
+      framesContainer.appendChild(imageElement);
+      currentIndex++;
+  
+      if (currentIndex === totalImages) {
+        clearInterval(slideshowIntervalId);
+        redirectToStroopPage();
+      }
+    }
+  
+    function redirectToStroopPage() {
+      window.location.href = "/stroop"; 
+    }
+  
+    showNextImage(); // Show the first image immediately
+    var slideshowIntervalId = setInterval(showNextImage, slideshowInterval);
   }
+  // else if (formData.type === 'stroop') {
+      
+  //     window.location.href = "/stroop";
+  //   }
 }

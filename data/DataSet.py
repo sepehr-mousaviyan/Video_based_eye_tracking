@@ -24,6 +24,9 @@ class DataSet:
             return int(last_user_id)
         return 0    
     
+    def get_curr_user_id(self):
+        return self.user_id
+    
     def write_to_csv(self, frame_index, frame_path, landmarks, gaze):
         data_list = []
 
@@ -181,8 +184,6 @@ class DataSet:
 
         landmarks_df = pd.read_csv(landmarks_file_path)
         gaze_df = pd.read_csv(gaze_file_path)
-        print(landmarks_df.columns)
-        print(gaze_df.columns)
 
         # Merge the dataframes based on 'Index'
         combined_df = pd.merge(landmarks_df, gaze_df, on='Index', how='outer')
