@@ -403,7 +403,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
 async function trialsLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(trials);
-  stopRecording(videoStream)
+  stopRecording()
   // update the current loop from the ExperimentHandler
   if (psychoJS.experiment._unfinishedLoops.length>0)
     currentLoop = psychoJS.experiment._unfinishedLoops.at(-1);
