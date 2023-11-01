@@ -91,7 +91,7 @@ function startRecording() {
     // Get the current form's time interval
     frameInterval = setInterval(captureFrame, 1000 / 0.5);
       
-
+}
 function stopRecording() {
   clearInterval(frameInterval);
   videoStream.getVideoTracks()[0].stop();
@@ -99,7 +99,7 @@ function stopRecording() {
   // var videoContainer = document.getElementById('videoContainer');
   frameCount = 0;
 }
-}
+
 await requestCameraPermission()
 
 // Start code blocks for 'Before Experiment'
