@@ -1,4 +1,5 @@
 var videoStream;
+videoElement = document.createElement('video');
 var frameInterval;
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
@@ -7,6 +8,8 @@ var videoElement; // Create video element
 var framesContainer = document.getElementById('framesContainer');
 var eyeTrackerContainer = document.getElementById('eyeTrackerContainer')
 var currentForm;
+var stream;
+
 document.getElementById("clk").onclick=async() => {
   console.log()
   await startTask();
@@ -19,6 +22,7 @@ async function startTask() {
     showForm(form);
     if (form.type !== 'stroop') {
       framesContainer.innerHTML = ''; // Clear the frames container
+      await requestCameraPermission()
       startRecording();
     }
   } catch (error) {
@@ -26,26 +30,25 @@ async function startTask() {
   }
 }
 
-// Separate function to request camera permission
 const requestCameraPermission = async () => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    videoStream = stream;
-    videoElement.srcObject = stream;
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
   } catch (error) {
     console.error('Error requesting camera permission:', error);
     throw error; // Rethrow the error to be caught in the startTask function
   }
 };
 
-const startRecording = async () => {
-  videoElement = document.createElement('video');
-  videoElement.autoplay = true;
-  // document.getElementById('videoContainer').appendChild(videoElement);
-  // var timeInterval = currentForm.time_interval * 1000;
-  frameInterval = setInterval(captureFrame, 1000 / 0.5);
-  // setTimeout(stopRecording(), timeInterval);
-};
+function startRecording() {
+    videoStream = stream;
+    videoElement = document.createElement('video');
+    videoElement.srcObject = stream;
+    videoElement.autoplay = true;
+    // document.getElementById('videoContainer').appendChild(videoElement)
+    // Get the current form's time interval
+    frameInterval = setInterval(captureFrame, 1000 / 0.5);
+      
+}
 
 function captureFrame() {
     canvas.width = videoElement.videoWidth;
