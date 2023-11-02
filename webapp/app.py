@@ -106,8 +106,10 @@ def save_image():
     frame, raw = video_processor.save_frame(frame_data)
 
     landmarks, output_frame = video_processor.process_frame(frame)
-    gaze = display_processor.get_point()
-    print(gaze)
+    gaze = ['', '']
+    if (app_properties.active_form_id == 'form4'):
+        gaze = display_processor.get_point()
+        print(gaze)
     index = video_processor.get_frame_count()
     data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
