@@ -25,7 +25,7 @@ class VideoProcessor:
     def process_frame(self, frame):
         # print('here')
         landmarks = LandmarkFinder.extract_landmarks(frame)
-        gazeDirection_frame = GazeFinder.extract_directon(frame)
+        gazeDirection_frame = GazeDirectionFinder.extract_directon(frame)
         print('here')
         
         return landmarks, self.circle_image(gazeDirection_frame, landmarks)
