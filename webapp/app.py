@@ -106,6 +106,10 @@ def save_image():
     frame, raw = video_processor.save_frame(frame_data)
     print("This")
     landmarks, output_frame = video_processor.process_frame(frame)
+    gaze = ['', '']
+    if (app_properties.active_form_id == 'form4'):
+        gaze = display_processor.get_point()
+        print(gaze)
     # display_processor.make_circle_points(3, 4)
     gaze, index = display_processor.get_point()
     
