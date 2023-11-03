@@ -5,6 +5,11 @@ class DisplayProcessor:
         self.window_height = 0
         self.count = 0
         self.points = []
+        for val_i in range (-10,11,2):
+            i = val_i/10.0
+            for val_j in range (-10,11,2):
+                j = val_j/10.0
+                self.points.append((i, j))
         
     def set_window_width(self, window_width):
         self.window_width = window_width
@@ -18,17 +23,17 @@ class DisplayProcessor:
     def get_window_height(self):
         return self.window_height
     
-    def make_circle_points(self, n = 3 ,m = 4):
-        vertical_step_size = int(self.window_height/n)
-        horizantal_step_size = int(self.window_width/m)
-        for i in range (0,self.window_height,horizantal_step_size):
-            for j in range (0,self.window_width,vertical_step_size):
-                self.points.append((j,i))
-    
     def update_counter(self):
         self.count = self.count + 1
-        
+    
+    def get_count(self):
+        return self.count
+    
     def get_point(self):
-        return self.points[self.count]
+        count = self.get_count()
+        return self.points[count], count
+    
+    # def get_point(self, point_number):
+        # return self.points[point_number]
 
 

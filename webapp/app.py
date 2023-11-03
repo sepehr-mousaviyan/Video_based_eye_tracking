@@ -104,10 +104,11 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']    
     frame, raw = video_processor.save_frame(frame_data)
-
+    print("This")
     landmarks, output_frame = video_processor.process_frame(frame)
-    gaze = display_processor.get_point()
-    print(gaze)
+    # display_processor.make_circle_points(3, 4)
+    gaze, index = display_processor.get_point()
+    
     index = video_processor.get_frame_count()
     data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
@@ -148,9 +149,8 @@ def generate_page():
     window_height = int(data['window_height'])
     display_processor.set_window_height(window_height)
     
-    display_processor.make_circle_points( n = 10 ,m = 20)
     
-    gaze = display_processor.get_point()
+    # gaze = display_processor.get_point()
     
     display_processor.update_counter()
 
