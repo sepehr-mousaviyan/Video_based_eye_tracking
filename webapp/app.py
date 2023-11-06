@@ -105,7 +105,8 @@ def save_image():
     frame_data = request.json['image_data']    
     frame, raw = video_processor.save_frame(frame_data)
     print("This")
-    landmarks, output_frame = video_processor.process_frame(frame)
+    # landmarks, output_frame = video_processor.process_frame(frame)
+    landmarks, output_frame = '', frame
     gaze = ['', '']
     if (app_properties.active_form_id == 'form4'):
         gaze = display_processor.get_point()

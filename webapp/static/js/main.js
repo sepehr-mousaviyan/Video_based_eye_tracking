@@ -18,7 +18,8 @@ document.getElementById("clk").onclick=async() => {
 async function startTask() {
   try {
     const form = await getForm();
-    // await requestCameraPermission(); // Wait for camera permission
+    // await requestCameraPermission();
+    // startRecording(); // Wait for camera permission
     showForm(form);
     if (form.type !== 'stroop') {
       framesContainer.innerHTML = ''; // Clear the frames container
