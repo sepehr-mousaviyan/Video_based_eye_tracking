@@ -80,11 +80,20 @@ forms = {
         ],
         'time_interval': 4  # Time interval in seconds for this form
     },
-    'form6': {
+    'sadStroop': {
         'type': 'stroop',
         'content': [
             'static/forms/image1.jpeg',
             'static/forms/image2.jpeg',
+            'stroop.html'
+        ],
+        'time_interval': 2  # Time interval in seconds for this form
+    },
+    'happyStroop': {
+        'type': 'stroop',
+        'content': [
+            'static/forms/image3.jpeg',
+            'static/forms/image4.jpeg',
             'stroop.html'
         ],
         'time_interval': 2  # Time interval in seconds for this form
