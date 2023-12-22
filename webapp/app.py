@@ -87,7 +87,7 @@ forms = {
             'static/forms/image2.jpeg',
             'stroop.html'
         ],
-        'time_interval': 2  # Time interval in seconds for this form
+        'time_interval': 6  # Time interval in seconds for this form
     },
     'happyStroop': {
         'type': 'stroop',
@@ -96,7 +96,7 @@ forms = {
             'static/forms/image4.jpeg',
             'stroop.html'
         ],
-        'time_interval': 2  # Time interval in seconds for this form
+        'time_interval': 6  # Time interval in seconds for this form
     }
 }
 
@@ -113,9 +113,8 @@ def video_feed():
 def save_image():
     frame_data = request.json['image_data']    
     frame, raw = video_processor.save_frame(frame_data)
-    print("This")
-    # landmarks, output_frame = video_processor.process_frame(frame)
-    landmarks, output_frame = '', frame
+    landmarks, output_frame = video_processor.process_frame(frame)
+    # landmarks, output_frame = '', frame
     gaze = ['', '']
     if (app_properties.active_form_id == 'form4'):
         gaze = display_processor.get_point()
@@ -195,7 +194,8 @@ def getCurrUserID():
     return jsonify({'userId': user_id})
 
 if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=5000)
     # configure_logging()  # Call the logging configuration function
-    app.run(debug=True)
+    # app.run(debug=False)
 
 
