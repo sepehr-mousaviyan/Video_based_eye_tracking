@@ -87,7 +87,7 @@ forms = {
             'static/forms/image2.jpeg',
             'stroop.html'
         ],
-        'time_interval': 2  # Time interval in seconds for this form
+        'time_interval': 6  # Time interval in seconds for this form
     },
     'happyStroop': {
         'type': 'stroop',
@@ -114,7 +114,7 @@ def save_image():
     frame_data = request.json['image_data']    
     frame, raw = video_processor.save_frame(frame_data)
     print("This")
-    # landmarks, output_frame = video_processor.process_frame(frame)
+    landmarks, output_frame = video_processor.process_frame(frame)
     landmarks, output_frame = '', frame
     gaze = ['', '']
     if (app_properties.active_form_id == 'form4'):

@@ -89,7 +89,7 @@ function startRecording() {
     videoElement.autoplay = true;
     // document.getElementById('videoContainer').appendChild(videoElement)
     // Get the current form's time interval
-    frameInterval = setInterval(captureFrame, 1000 / 0.5);
+    frameInterval = setInterval(captureFrame, 1000 / 25);
       
 }
 function stopRecording() {
@@ -403,7 +403,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
 async function trialsLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(trials);
-  stopRecording()
+  // stopRecording()
   // update the current loop from the ExperimentHandler
   if (psychoJS.experiment._unfinishedLoops.length>0)
     currentLoop = psychoJS.experiment._unfinishedLoops.at(-1);

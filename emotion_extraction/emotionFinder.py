@@ -81,7 +81,7 @@ def process_frames_emotion(image):
             emotion = np.argmax(scores)
             print(scores, fer.idx_to_class[emotion], 'Emotion elapsed:', elapsed)
 
-            cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            # cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
             fontScale = 1
             min_y = y1
             if min_y < 0:
