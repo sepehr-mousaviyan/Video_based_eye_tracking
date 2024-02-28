@@ -25,10 +25,14 @@ class VideoProcessor:
     def process_frame(self, frame):
         # print('here')
         landmarks = LandmarkFinder.extract_landmarks(frame)
-        gazeDirection_frame = GazeDirectionFinder.extract_directon(frame)
+        detection_result = LandmarkFinder.detection(frame)
+        
+        anotated_image = LandmarkFinder.draw_landmarks_on_image(frame, detection_result)
+        gazeDirection_frame = GazeDirectionFinder.extract_directon(anotated_image)
         print('here')
         
-        return landmarks, self.circle_image(gazeDirection_frame, landmarks)
+        # return landmarks, self.circle_image(gazeDirection_frame, landmarks)
+        return landmarks, gazeDirection_frame
         
     
     
@@ -71,4 +75,17 @@ class VideoProcessor:
         print(file_path)
         cv2.imwrite(file_path, image)
         return image
+    
+    def save_processed_frame_2(self, face_image, plot_image):
+        # Create the directory if it doesn't exist
+        os.makedirs(self.frame_save_path+'/processed', exist_ok=True)
+        face_filename = f'{self.subjectID}_face_frame_{self.frame_count-1}.jpg'
+        plot_filename = f'{self.subjectID}_plot_frame_{self.frame_count-1}.jpg'
+        face_file_path = os.path.join(self.frame_save_path+'/processed', face_filename)
+        plot_file_path = os.path.join(self.frame_save_path+'/processed', plot_filename)
+
+        cv2.imwrite(face_file_path, face_image)
+        cv2.imwrite(plot_file_path, plot_image)
+
+        return face_image, plot_image
         

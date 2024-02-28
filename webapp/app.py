@@ -96,7 +96,7 @@ forms = {
             'static/forms/image4.jpeg',
             'stroop.html'
         ],
-        'time_interval': 2  # Time interval in seconds for this form
+        'time_interval': 6  # Time interval in seconds for this form
     }
 }
 
@@ -126,9 +126,15 @@ def save_image():
     index = video_processor.get_frame_count()
     data_set.write_frameData_to_csv(index, f"/{index}", landmarks, gaze)
 
-    image_with_emotion, emotions = emotionFinder.process_frames_emotion(output_frame)
-
-    video_processor.save_processed_frame(image_with_emotion)
+    
+    i , image_with_landmarks = video_processor.process_frame(output_frame)
+    image_with_emotion, emotions, plot_image = emotionFinder.process_frames_emotion(image_with_landmarks)
+    # image_with_emotion = image_with_landmarks
+    
+    # video_processor.save_processed_frame(image_with_emotion)
+    video_processor.save_processed_frame_2(image_with_emotion, plot_image)
+    
+    # video_processor.save_processed_frame(image_with_emotion)
 
     _, jpeg_image = cv2.imencode('.jpg', image_with_emotion)
 
@@ -195,7 +201,8 @@ def getCurrUserID():
     return jsonify({'userId': user_id})
 
 if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=5000)
     # configure_logging()  # Call the logging configuration function
-    app.run(debug=True)
+    # app.run(debug=False)
 
 

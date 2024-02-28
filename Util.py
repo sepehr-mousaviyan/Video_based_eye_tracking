@@ -9,4 +9,4 @@ def save_base64_image(image_data, file_path):
 
     img = Image.open(io.BytesIO(base64.decodebytes(bytes(encoded_data, "utf-8"))))
 
-    img.save(file_path)
+    img.save(file_path, dpi=(300, 300), quality=95)

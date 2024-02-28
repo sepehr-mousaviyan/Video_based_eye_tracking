@@ -394,7 +394,7 @@ function trialsLoopBegin(trialsLoopScheduler, snapshot) {
       trialsLoopScheduler.add(trialRoutineEnd(snapshot));
       trialsLoopScheduler.add(trialsLoopEndIteration(trialsLoopScheduler, snapshot));
     }
-    
+    // stopRecording()
     return Scheduler.Event.NEXT;
   }
 }
